@@ -70,7 +70,7 @@ export const DEFAULT_RANGES: Record<IndicatorId, { min: number; max: number }> =
 
 // Generate color breaks for a given indicator
 export function generateColorBreaks(
-  indicator: IndicatorId,
+  _indicator: IndicatorId,
   colorScaleId: ColorScaleId,
   min: number,
   max: number
@@ -103,7 +103,7 @@ export function generateColorExpression(
     stops.push(color)
   })
 
-  return ['interpolate', ['linear'], ['get', indicator], ...stops]
+  return ['interpolate', ['linear'], ['get', indicator as string], ...stops]
 }
 
 // No data color
