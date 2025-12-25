@@ -61,11 +61,37 @@ export const COLOR_SCALES: Record<ColorScaleId, string[]> = {
 
 // Default data ranges for each indicator (will be overwritten by actual data)
 export const DEFAULT_RANGES: Record<IndicatorId, { min: number; max: number }> = {
+  // Core
   population: { min: 0, max: 30000 },
   density: { min: 0, max: 40000 },
+  
+  // Gender
+  pct_male: { min: 45, max: 55 },
+  pct_female: { min: 45, max: 55 },
+  sex_ratio: { min: 85, max: 115 },
+  
+  // Broad age groups
   pct_0_14: { min: 5, max: 25 },
   pct_15_64: { min: 50, max: 80 },
   pct_65_plus: { min: 5, max: 35 },
+  
+  // Granular age bands
+  pct_0_5: { min: 0, max: 8 },
+  pct_6_14: { min: 0, max: 12 },
+  pct_15_17: { min: 0, max: 5 },
+  pct_18_24: { min: 0, max: 15 },
+  pct_25_34: { min: 5, max: 25 },
+  pct_35_44: { min: 5, max: 20 },
+  pct_45_54: { min: 5, max: 20 },
+  pct_55_64: { min: 5, max: 20 },
+  pct_65_79: { min: 5, max: 25 },
+  pct_80_plus: { min: 0, max: 10 },
+  
+  // Dependency indicators
+  aging_index: { min: 0, max: 300 },
+  dependency_ratio: { min: 20, max: 100 },
+  elderly_dependency: { min: 10, max: 60 },
+  youth_dependency: { min: 10, max: 50 },
 }
 
 // Generate color breaks for a given indicator
