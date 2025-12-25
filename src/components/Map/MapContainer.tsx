@@ -14,9 +14,11 @@ const protocol = new Protocol()
 maplibregl.addProtocol('pmtiles', protocol.tile)
 
 const STADIA_KEY = import.meta.env.VITE_STADIA_API_KEY as string | undefined
+// Stadia Maps works on localhost without an API key
+// For production, either add an API key or use domain-based authentication
 const MAP_STYLE = STADIA_KEY
   ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_KEY}`
-  : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+  : 'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json'
 
 export function MapContainer() {
   const mapRef = useRef<MapRef>(null)
@@ -25,11 +27,29 @@ export function MapContainer() {
   const setTooltip = useAppStore((s) => s.setTooltip)
 
   // Store map reference globally for other components
-  useEffect(() => {
+  const setMapRef = useAppStore((s) => s.setMapRef)
+  const setActiveLayer = useAppStore((s) => s.setActiveLayer)
+  const setSelectedAreaId = useAppStore((s) => s.setSelectedAreaId)
+  
+  // Set mapRef when map loads
+  const onLoad = useCallback(() => {
     if (mapRef.current) {
-      // Map is ready
+      setMapRef(mapRef.current)
     }
-  }, [])
+  }, [setMapRef])
+  
+  useEffect(() => {
+    return () => setMapRef(null)
+  }, [setMapRef])
+
+  // Sync URL state to store
+  useEffect(() => {
+    setActiveLayer(mapState.layer)
+  }, [mapState.layer, setActiveLayer])
+
+  useEffect(() => {
+    setSelectedAreaId(mapState.areaId)
+  }, [mapState.areaId, setSelectedAreaId])
 
   const onMove = useCallback(
     (evt: ViewStateChangeEvent) => {
@@ -71,7 +91,9 @@ export function MapContainer() {
         const feature = e.features[0]
         if (feature?.properties) {
           const props = feature.properties as Record<string, unknown>
-          setSelectedArea(props.PLR_ID as string)
+          const areaId = props.PLR_ID as string
+          // Update URL, which will sync to store via effect
+          setSelectedArea(areaId)
         }
       } else {
         // Click on empty area - deselect
@@ -91,6 +113,7 @@ export function MapContainer() {
       }}
       style={{ width: '100%', height: '100%' }}
       mapStyle={MAP_STYLE}
+      onLoad={onLoad}
       onMoveEnd={onMove}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}

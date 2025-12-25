@@ -109,25 +109,20 @@ public/
 
 ### 1.1 Data Sources 
 
-| Dataset | Catalog Page | Direct Download | Key Field |
-|---------|--------------|-----------------|-----------|
-| **LOR Geometry (2021)** | [Catalog](https://daten.berlin.de/datensaetze/lebensweltlich-orientierte-raume-lor-01-01-2021-wfs-34c86848) | WFS API (see below) | `PLR_ID` |
-| **Population by Age (2024)** | [Catalog](https://daten.berlin.de/datensaetze/einwohnerinnen-und-einwohner-in-berlin-in-lor-planungsraumen-am-31-12-2024) | [CSV Download](https://www.statistik-berlin-brandenburg.de/opendata/EWR_L21_202412E_Matrix.csv) | `PLR_ID` |
+**See `DATA_SOURCES.md` for complete details, download instructions, and troubleshooting.**
 
-**LOR Geometry Details:**
-- **WFS Endpoint**: `https://gdi.berlin.de/services/wfs/lor_2021`
-- **GetCapabilities**: `https://gdi.berlin.de/services/wfs/lor_2021?request=GetCapabilities&service=WFS`
-- **Reference date**: 01.01.2021
-- **Contains**: 58 Prognoseräume, 143 Bezirksregionen, **542 Planungsräume**
-- **License**: CC BY 3.0 DE
+| Dataset | Key Field | Status |
+|---------|-----------|--------|
+| **LOR 2021 Geometry** | `PLR_ID` | ✅ Available (requires manual download & conversion) |
+| **Population by Age (2024)** | `PLR_ID` | ✅ Direct CSV download |
+
+**Quick Summary:**
+- **LOR 2021**: 542 Planungsräume, 143 Bezirksregionen, 58 Prognoseräume
+- **Reference dates**: Geometry (01.01.2021), Demographics (31.12.2024)
+- **License**: CC BY 3.0 DE / CC BY
 - **Source**: Amt für Statistik Berlin-Brandenburg
 
-**Population Data Details:**
-- **CSV URL**: `https://www.statistik-berlin-brandenburg.de/opendata/EWR_L21_202412E_Matrix.csv`
-- **Metadata PDF**: `https://www.statistik-berlin-brandenburg.de/opendata/Beschreibung_EWR_Datenpool_202311.pdf`
-- **Reference date**: 31.12.2024
-- **License**: CC BY
-- **Source**: Amt für Statistik Berlin-Brandenburg
+📖 **For working download URLs and setup instructions, see: `DATA_SOURCES.md`**
 
 ### 1.2 Pipeline Scripts
 
@@ -135,14 +130,13 @@ Create `scripts/` folder at project root:
 
 ```
 scripts/
-├── 01-fetch-geometry.ts      # Download LOR GeoJSON from WFS
+├── 01-fetch-geometry.ts      # Verify LOR GeoJSON exists (542 features)
 ├── 02-fetch-demographics.ts  # Download population CSV
 ├── 03-process-data.ts        # Join, compute derived values
 ├── 04-generate-tiles.sh      # tippecanoe → PMTiles
 ├── 05-generate-profiles.ts   # Create area_profiles JSON
 └── lib/
-    ├── wfs-client.ts
-    └── csv-parser.ts
+    └── csv-parser.ts          # CSV parsing utilities
 ```
 
 Run scripts with: `npx tsx scripts/01-fetch-geometry.ts`
@@ -150,20 +144,22 @@ Run scripts with: `npx tsx scripts/01-fetch-geometry.ts`
 ### 1.3 Data Processing Steps
 
 1. **Fetch LOR Geometry**
-   ```bash
-   # WFS endpoint for LOR 2021 
-   # Available layers:
-   #   - lor_2021:a_lor_plr_2021  (Planungsräume, 542 areas)
-   #   - lor_2021:b_lor_bzr_2021  (Bezirksregionen, 143 areas)
-   #   - lor_2021:c_lor_pgr_2021  (Prognoseräume, 58 areas)
    
-   # Get Planungsräume as GeoJSON (542 areas - finest granularity)
-   curl "https://gdi.berlin.de/services/wfs/lor_2021?\
-   service=WFS&version=2.0.0&request=GetFeature&\
-   typeNames=lor_2021:a_lor_plr_2021&\
-   outputFormat=application/json&\
-   srsName=EPSG:4326" \
-   -o data/raw/lor-planungsraeume.geojson
+   **See `DATA_SOURCES.md` for step-by-step instructions.**
+   
+   LOR 2021 geometry must be downloaded as Shapefile and converted to GeoJSON:
+   ```bash
+   # Download 7z archive (805 KB)
+   curl -O "https://www.berlin.de/sen/sbw/_assets/stadtdaten/stadtwissen/lebensweltlich-orientierte-raeume/lor_2021-01-01_k3_shapefiles_nur_id.7z"
+   
+   # Extract and convert (requires p7zip and gdal)
+   7z x lor_2021-01-01_k3_shapefiles_nur_id.7z
+   ogr2ogr -f GeoJSON -t_srs EPSG:4326 \
+     data/raw/lor-planungsraeume.geojson \
+     lor_planungsraeume_2021.shp
+   
+   # Verify file (should have 542 features)
+   npx tsx scripts/01-fetch-geometry.ts
    ```
 
 2. **Fetch Demographics**
@@ -801,12 +797,12 @@ headers:
 
 | Risk | Mitigation |
 |------|------------|
-| WFS returns different LOR version | Using `lor_2021` endpoint explicitly; validate 542 PLR IDs match CSV |
+| Geometry download requires manual steps | Clear instructions in DATA_SOURCES.md; script validates 542 features |
 | PMTiles too large | Simplify geometry; limit zoom range; use vector-tile-reduce |
 | Stadia rate limits | Cache geocoding results; implement debounce (300ms) |
 | Mobile touch events conflict | Use react-map-gl's built-in touch handling |
 | Indicator data gaps | Show "No data" gracefully in legend and card |
-| LOR IDs mismatch between geometry & stats | Both datasets use same `PLR_ID` format (8-digit); verify join coverage |
+| LOR IDs mismatch between geometry & stats | Both datasets use LOR 2021 `PLR_ID` format (8-digit); verify join coverage |
 
 ---
 

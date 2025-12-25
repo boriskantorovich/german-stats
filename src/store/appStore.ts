@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { MapRef } from 'react-map-gl/maplibre'
 import type { IndicatorId, TooltipData } from '../types'
 
 interface AppState {
@@ -25,9 +26,14 @@ interface AppState {
   // Mobile sheet
   isMobileSheetOpen: boolean
   setIsMobileSheetOpen: (open: boolean) => void
+
+  // Map reference for programmatic control
+  mapRef: MapRef | null
+  setMapRef: (ref: MapRef | null) => void
+  flyToLocation: (lng: number, lat: number, zoom?: number) => void
 }
 
-export const useAppStore = create<AppState>((set) => ({
+export const useAppStore = create<AppState>((set, get) => ({
   // Selected area
   selectedAreaId: null,
   setSelectedAreaId: (id) => set({ selectedAreaId: id, isCardOpen: id !== null }),
@@ -51,5 +57,20 @@ export const useAppStore = create<AppState>((set) => ({
   // Mobile sheet
   isMobileSheetOpen: false,
   setIsMobileSheetOpen: (open) => set({ isMobileSheetOpen: open }),
+
+  // Map reference for programmatic control
+  mapRef: null,
+  setMapRef: (ref) => set({ mapRef: ref }),
+  flyToLocation: (lng, lat, zoom = 15) => {
+    const { mapRef } = get()
+    if (mapRef) {
+      mapRef.flyTo({
+        center: [lng, lat],
+        zoom,
+        duration: 1500,
+        essential: true,
+      })
+    }
+  },
 }))
 

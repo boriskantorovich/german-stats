@@ -46,6 +46,5 @@ data/raw/
 data/processed/
 
 # PMTiles (generated, can be large)
-# Uncomment if you want to exclude from git:
-# public/data/*.pmtiles
+public/data/*.pmtiles
 

@@ -1,5 +1,5 @@
 import { useAreaProfile, useBerlinStats } from '../../hooks/useAreaData'
-import { useAppStore } from '../../store/appStore'
+import { useMapState } from '../../hooks/useMapState'
 import { DISPLAY_INDICATORS, INDICATORS } from '../../data/metadata'
 import { StatBlock } from './StatBlock'
 import { PercentileBar } from './PercentileBar'
@@ -14,7 +14,7 @@ interface AreaCardProps {
 export function AreaCard({ areaId }: AreaCardProps) {
   const { data: profile, isLoading, error } = useAreaProfile(areaId)
   const { data: berlinStats } = useBerlinStats()
-  const setSelectedAreaId = useAppStore((s) => s.setSelectedAreaId)
+  const { setSelectedArea } = useMapState()
 
   if (isLoading) {
     return <CardSkeleton />
@@ -26,7 +26,7 @@ export function AreaCard({ areaId }: AreaCardProps) {
         <p className="text-text-secondary">Unable to load area data</p>
         <button
           className="mt-2 text-sm text-accent-primary hover:underline"
-          onClick={() => setSelectedAreaId(null)}
+          onClick={() => setSelectedArea(null)}
         >
           Close
         </button>
@@ -48,7 +48,7 @@ export function AreaCard({ areaId }: AreaCardProps) {
         </div>
         <button
           className="text-text-secondary hover:text-text-primary transition-colors p-1"
-          onClick={() => setSelectedAreaId(null)}
+          onClick={() => setSelectedArea(null)}
           aria-label="Close area card"
         >
           <svg

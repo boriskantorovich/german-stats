@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import clsx from 'clsx'
-import { useAppStore } from '../../store/appStore'
+import { useAppStore } from '@/store/appStore'
 
 interface MobileSheetProps {
   children: ReactNode

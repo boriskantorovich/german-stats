@@ -1,12 +1,13 @@
-import { MapContainer } from '../Map/MapContainer'
-import { AreaCard } from '../AreaCard/AreaCard'
-import { MobileSheet } from './MobileSheet'
-import { SearchBox } from '../Search/SearchBox'
-import { LayerSwitcher } from '../Map/LayerSwitcher'
-import { Legend } from '../Map/Legend'
-import { ShareButton } from '../Controls/ShareButton'
-import { useAppStore } from '../../store/appStore'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { MapContainer } from '@/components/Map/MapContainer'
+import { AreaCard } from '@/components/AreaCard/AreaCard'
+import { MobileSheet } from '@/components/Layout/MobileSheet'
+import { SearchBox } from '@/components/Search/SearchBox'
+import { LayerSwitcher } from '@/components/Map/LayerSwitcher'
+import { Legend } from '@/components/Map/Legend'
+import { ShareButton } from '@/components/Controls/ShareButton'
+import { ThemeToggle } from '@/components/Controls/ThemeToggle'
+import { useAppStore } from '@/store/appStore'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export function AppShell() {
   const selectedAreaId = useAppStore((s) => s.selectedAreaId)
@@ -28,8 +29,9 @@ export function AppShell() {
         <Legend />
       </div>
 
-      {/* Share button - top right */}
-      <div className="absolute right-4 top-4 z-10">
+      {/* Controls - top right */}
+      <div className="absolute right-4 top-4 z-10 flex gap-2">
+        <ThemeToggle />
         <ShareButton />
       </div>
 

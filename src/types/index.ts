@@ -1,36 +1,26 @@
 // LOR Area Types
-export interface LORArea {
-  PLR_ID: string
-  PLR_NAME: string
-  BZR_ID: string
-  BZR_NAME: string
-  BEZ_ID: string
-  BEZ_NAME: string
-}
+// The geometry data only contains PLR_ID (8-digit code like "01100101")
+// Format: BEZ(2 digits) + PGR(2) + BZR(2) + PLR(2)
+// Example: "01100101" = Bezirk 01, Prognoseraum 10, Bezirksregion 01, Planungsraum 01
+export interface ProcessedArea {
+  PLR_ID: string        // 8-digit planning area identifier
+  // Raw values from CSV
+  population: number    // E_E: Total population
+  area_km2: number      // Calculated from geometry
 
-export interface ProcessedArea extends LORArea {
-  // Raw values
-  population: number
-  area_km2: number
-  pop_0_5: number
-  pop_6_14: number
-  pop_15_17: number
-  pop_18_24: number
-  pop_25_54: number
-  pop_55_64: number
-  pop_65_79: number
-  pop_80_plus: number
-
-  // Computed - Age groups (simplified)
-  pop_0_14: number
-  pop_15_64: number
-  pop_65_plus: number
+  // Age groups (aggregated from CSV columns)
+  // Source: E_EU1 + E_E1U6 + E_E6U15 = 0-14 years
+  //         E_E15U18 + E_E18U25 + E_E25U55 + E_E55U65 = 15-64 years
+  //         E_E65U80 + E_E80U110 = 65+ years
+  pop_0_14: number      // Children and youth
+  pop_15_64: number     // Working age
+  pop_65_plus: number   // Retirement age
 
   // Computed - Derived metrics
-  density: number // pop / km²
-  pct_0_14: number // percentage
-  pct_15_64: number
-  pct_65_plus: number
+  density: number       // pop / km²
+  pct_0_14: number      // percentage of population 0-14
+  pct_15_64: number     // percentage of population 15-64
+  pct_65_plus: number   // percentage of population 65+
 
   // Ranks/percentiles (computed across all areas)
   density_percentile: number
@@ -122,11 +112,6 @@ export interface TooltipData {
 // GeoJSON Feature properties from PMTiles
 export interface LORFeatureProperties {
   PLR_ID: string
-  PLR_NAME: string
-  BZR_ID: string
-  BZR_NAME: string
-  BEZ_ID: string
-  BEZ_NAME: string
   population?: number
   density?: number
   pct_0_14?: number

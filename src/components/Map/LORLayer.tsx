@@ -1,6 +1,6 @@
 import { Source, Layer } from 'react-map-gl/maplibre'
-import { useAppStore } from '../../store/appStore'
-import { useLayerConfig } from '../../hooks/useLayerConfig'
+import { useAppStore } from '@/store/appStore'
+import { useLayerConfig } from '@/hooks/useLayerConfig'
 import { NO_DATA_COLOR, SELECTED_OUTLINE_COLOR, DEFAULT_OUTLINE_COLOR } from '../../data/layers'
 import type { FillLayerSpecification, LineLayerSpecification } from 'maplibre-gl'
 

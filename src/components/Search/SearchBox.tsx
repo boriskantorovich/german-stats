@@ -1,5 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import clsx from 'clsx'
+import { useAppStore } from '@/store/appStore'
+import { useMapState } from '@/hooks/useMapState'
 
 const STADIA_KEY = import.meta.env.VITE_STADIA_API_KEY as string | undefined
 
@@ -19,25 +21,37 @@ export function SearchBox() {
   const [results, setResults] = useState<SearchResult[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<number>()
+  const flyToLocation = useAppStore((s) => s.flyToLocation)
+  const { setSelectedArea } = useMapState()
 
   const search = useCallback(async (q: string) => {
-    if (!q.trim() || !STADIA_KEY) {
+    if (!q.trim()) {
       setResults([])
+      setHasSearched(false)
       return
     }
 
     setIsLoading(true)
+    setHasSearched(true)
 
     try {
+      // Build URL with optional API key (not needed for localhost)
+      const params = new URLSearchParams({
+        text: q,
+        'focus.point.lat': '52.52',
+        'focus.point.lon': '13.405',
+        'boundary.country': 'DE',
+        layers: 'address,venue,street',
+      })
+      if (STADIA_KEY) {
+        params.append('api_key', STADIA_KEY)
+      }
+
       const response = await fetch(
-        `https://api.stadiamaps.com/geocoding/v1/autocomplete?` +
-          `text=${encodeURIComponent(q)}&` +
-          `focus.point.lat=52.52&focus.point.lon=13.405&` +
-          `boundary.country=DE&` +
-          `layers=address,venue,street&` +
-          `api_key=${STADIA_KEY}`
+        `https://api.stadiamaps.com/geocoding/v1/autocomplete?${params}`
       )
 
       if (!response.ok) throw new Error('Search failed')
@@ -66,13 +80,50 @@ export function SearchBox() {
     }, 300)
   }
 
-  const selectResult = (_result: SearchResult) => {
-    // For now, just close the dropdown
-    // Full implementation would fly to location and select LOR area
-    setQuery('')
-    setResults([])
-    setIsOpen(false)
-  }
+  const selectResult = useCallback(
+    (result: SearchResult) => {
+      const [lng, lat] = result.geometry.coordinates
+      const mapRef = useAppStore.getState().mapRef
+
+      if (!mapRef) return
+
+      const map = mapRef.getMap()
+
+      // Handler to query the area after map move completes
+      const onMoveEnd = () => {
+        // Give a small delay for tiles to render
+        setTimeout(() => {
+          const features = map.queryRenderedFeatures(map.project([lng, lat]), {
+            layers: ['lor-fill'],
+          })
+
+          if (features && features.length > 0) {
+            const areaId = features[0].properties?.PLR_ID
+            if (areaId) {
+              // Update URL state, which will sync to store
+              setSelectedArea(areaId)
+            }
+          }
+        }, 300)
+
+        // Remove the listener
+        map.off('moveend', onMoveEnd)
+      }
+
+      // Listen for when flyTo completes
+      map.once('moveend', onMoveEnd)
+
+      // Fly to the selected location
+      flyToLocation(lng, lat, 16)
+
+      // Clear and close search
+      setQuery('')
+      setResults([])
+      setIsOpen(false)
+      setHasSearched(false)
+    },
+    [flyToLocation, setSelectedArea]
+  )
 
   // Close on click outside
   useEffect(() => {
@@ -128,13 +179,13 @@ export function SearchBox() {
 
       {/* Results dropdown */}
       {isOpen && results.length > 0 && (
-        <ul className="absolute top-full left-0 right-0 mt-2 glass-panel py-1 max-h-64 overflow-y-auto">
+        <ul className="absolute top-full left-0 right-0 mt-2 glass-panel py-1 max-h-64 overflow-y-auto z-50">
           {results.map((result) => (
             <li key={result.properties.id}>
               <button
                 className={clsx(
                   'w-full text-left px-3 py-2 text-sm transition-colors',
-                  'hover:bg-white/5 text-text-primary'
+                  'hover:bg-hover-bg text-text-primary'
                 )}
                 onClick={() => selectResult(result)}
               >
@@ -145,12 +196,14 @@ export function SearchBox() {
         </ul>
       )}
 
-      {/* No API key warning */}
-      {!STADIA_KEY && isOpen && query.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 glass-panel p-3 text-xs text-text-secondary">
-          Search requires a Stadia Maps API key. Add VITE_STADIA_API_KEY to your .env file.
+
+      {/* Info about localhost */}
+      {!STADIA_KEY && isOpen && query.length > 0 && results.length === 0 && !isLoading && hasSearched && (
+        <div className="absolute top-full left-0 right-0 mt-2 glass-panel p-3 text-xs text-text-secondary z-50">
+          Note: Search works on localhost without an API key. For production, add VITE_STADIA_API_KEY to your .env file.
         </div>
       )}
+
     </div>
   )
 }

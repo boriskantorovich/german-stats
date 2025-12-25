@@ -1,5 +1,5 @@
-import { COLOR_SCALES } from '../data/layers'
-import type { ColorScaleId } from '../types'
+import { COLOR_SCALES } from '@/data/layers'
+import type { ColorScaleId } from '@/types'
 
 /**
  * Interpolate between two colors

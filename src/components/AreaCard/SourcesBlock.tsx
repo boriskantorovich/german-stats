@@ -15,7 +15,7 @@ export function SourcesBlock({ indicators }: SourcesBlockProps) {
   const referenceDate = firstIndicator ? INDICATORS[firstIndicator].referenceDate : ''
 
   return (
-    <div className="pt-3 border-t border-white/10 space-y-2">
+    <div className="pt-3 border-t border-border-subtle space-y-2">
       <h4 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
         Data Sources
       </h4>

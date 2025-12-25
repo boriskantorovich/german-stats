@@ -1,6 +1,6 @@
-import { useAppStore } from '../../store/appStore'
-import { useLayerConfig } from '../../hooks/useLayerConfig'
-import { useProfilesData } from '../../hooks/useAreaData'
+import { useAppStore } from '@/store/appStore'
+import { useLayerConfig } from '@/hooks/useLayerConfig'
+import { useProfilesData } from '@/hooks/useAreaData'
 
 export function Tooltip() {
   const tooltip = useAppStore((s) => s.tooltip)

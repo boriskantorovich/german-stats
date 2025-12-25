@@ -4,13 +4,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * CSS Variables are the SINGLE SOURCE OF TRUTH for theming.
+ * Tailwind config references these variables.
+ * To switch themes: toggle .dark class on <html> element.
+ */
+
 :root {
-  /* Typography */
+  /* Typography - Static, no theme variation */
   --font-display: 'Instrument Sans', system-ui, sans-serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Colors - Dark theme inspired by IDE aesthetics */
+  /* ========== LIGHT THEME (default) ========== */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --accent-primary: #2563eb;
+  --accent-secondary: #dc2626;
+  --accent-success: #16a34a;
+
+  /* Semantic colors for data visualization */
+  --data-low: #bfdbfe;
+  --data-mid: #3b82f6;
+  --data-high: #1e40af;
+
+  /* Borders & Shadows - Light theme */
+  --border-subtle: rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.1);
+
+  /* Interactive states */
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --active-bg: rgba(0, 0, 0, 0.08);
+}
+
+/* ========== DARK THEME ========== */
+.dark {
   --bg-primary: #0f1419;
   --bg-secondary: #1a2028;
   --bg-elevated: #252d38;
@@ -20,23 +51,39 @@
   --accent-secondary: #f78166;
   --accent-success: #56d364;
 
-  /* Semantic colors for data */
+  /* Semantic colors for data visualization */
   --data-low: #0d419d;
   --data-mid: #3b82f6;
   --data-high: #93c5fd;
 
-  /* Spacing */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-
-  /* Borders & Shadows */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  /* Borders & Shadows - Dark theme */
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* Interactive states */
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --active-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* Respect system preference when no explicit class is set */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg-primary: #0f1419;
+    --bg-secondary: #1a2028;
+    --bg-elevated: #252d38;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --accent-primary: #58a6ff;
+    --accent-secondary: #f78166;
+    --accent-success: #56d364;
+    --data-low: #0d419d;
+    --data-mid: #3b82f6;
+    --data-high: #93c5fd;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --hover-bg: rgba(255, 255, 255, 0.05);
+    --active-bg: rgba(255, 255, 255, 0.08);
+  }
 }
 
 * {
@@ -97,10 +144,10 @@ body {
 /* Custom utility classes */
 @layer components {
   .glass-panel {
-    background: rgba(26, 32, 40, 0.9);
+    background: color-mix(in srgb, var(--bg-secondary) 90%, transparent);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
     box-shadow: var(--shadow-card);
   }
 
@@ -111,18 +158,18 @@ body {
   }
 
   .btn-primary:hover {
-    background-color: #79b8ff;
+    filter: brightness(1.15);
   }
 
   .btn-secondary {
     @apply px-4 py-2 rounded-md font-medium transition-colors;
     background-color: var(--bg-elevated);
     color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-subtle);
   }
 
   .btn-secondary:hover {
-    background-color: #2d3748;
+    filter: brightness(1.1);
   }
 }
 

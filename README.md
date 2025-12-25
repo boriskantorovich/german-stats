@@ -39,19 +39,28 @@ npm run dev
 
 ## Data Pipeline
 
-The app uses LOR (Lebensweltlich orientierte Räume) data from Berlin Open Data:
+The app uses LOR 2021 (Lebensweltlich orientierte Räume) data from Berlin Open Data.
+
+**Prerequisites:**
+- LOR 2021 geometry must be downloaded and converted manually (see DATA_SOURCES.md)
+- Requires `p7zip` and `gdal` for Shapefile conversion
 
 ```bash
-# 1. Fetch LOR geometry from WFS
+# 1. Download & convert LOR 2021 Shapefile (see DATA_SOURCES.md for details)
+curl -O "https://www.berlin.de/sen/sbw/_assets/stadtdaten/stadtwissen/lebensweltlich-orientierte-raeume/lor_2021-01-01_k3_shapefiles_nur_id.7z"
+7z x lor_2021-01-01_k3_shapefiles_nur_id.7z
+ogr2ogr -f GeoJSON -t_srs EPSG:4326 data/raw/lor-planungsraeume.geojson lor_planungsraeume_2021.shp
+
+# 2. Verify geometry file
 npx tsx scripts/01-fetch-geometry.ts
 
-# 2. Fetch population demographics
+# 3. Fetch population demographics
 npx tsx scripts/02-fetch-demographics.ts
 
-# 3. Join and process data
+# 4. Join and process data
 npx tsx scripts/03-process-data.ts
 
-# 4. Generate PMTiles (requires tippecanoe)
+# 5. Generate PMTiles (requires tippecanoe)
 ./scripts/04-generate-tiles.sh
 ```
 

@@ -18,11 +18,11 @@ export function PercentileBar({ percentile, label, format, value }: PercentileBa
       <div className="relative h-6 bg-bg-elevated rounded-full overflow-hidden">
         {/* Track marks */}
         <div className="absolute inset-0 flex justify-between px-2 items-center pointer-events-none">
-          <span className="w-px h-3 bg-white/10" />
-          <span className="w-px h-3 bg-white/10" />
-          <span className="w-px h-3 bg-white/10" />
-          <span className="w-px h-3 bg-white/10" />
-          <span className="w-px h-3 bg-white/10" />
+          <span className="w-px h-3 bg-border-subtle" />
+          <span className="w-px h-3 bg-border-subtle" />
+          <span className="w-px h-3 bg-border-subtle" />
+          <span className="w-px h-3 bg-border-subtle" />
+          <span className="w-px h-3 bg-border-subtle" />
         </div>
 
         {/* Fill */}

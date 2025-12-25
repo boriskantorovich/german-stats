@@ -9,7 +9,7 @@ interface ComparisonTableProps {
 
 export function ComparisonTable({ area, berlin, indicators }: ComparisonTableProps) {
   return (
-    <div className="overflow-hidden rounded-md border border-white/10">
+    <div className="overflow-hidden rounded-md border border-border-subtle">
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-bg-elevated/50">
@@ -25,7 +25,7 @@ export function ComparisonTable({ area, berlin, indicators }: ComparisonTablePro
             const berlinValue = getBerlinValue(berlin, ind)
 
             return (
-              <tr key={ind} className="border-t border-white/5">
+              <tr key={ind} className="border-t border-border-subtle">
                 <td className="px-3 py-2 text-text-secondary">{meta.label}</td>
                 <td className="px-3 py-2 text-right font-mono text-text-primary">
                   {typeof areaValue === 'number' ? meta.format(areaValue) : 'N/A'}

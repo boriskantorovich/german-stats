@@ -1,5 +1,5 @@
-import { useLayerConfig } from '../../hooks/useLayerConfig'
-import { NO_DATA_COLOR } from '../../data/layers'
+import { useLayerConfig } from '@/hooks/useLayerConfig'
+import { NO_DATA_COLOR } from '@/data/layers'
 
 export function Legend() {
   const { indicatorMeta, colorBreaks, isLoading } = useLayerConfig()
@@ -62,7 +62,7 @@ export function Legend() {
       </div>
 
       {/* No data indicator */}
-      <div className="mt-3 pt-2 border-t border-white/10 flex items-center gap-2 text-xs">
+      <div className="mt-3 pt-2 border-t border-border-subtle flex items-center gap-2 text-xs">
         <span
           className="w-4 h-4 rounded flex-shrink-0"
           style={{ backgroundColor: NO_DATA_COLOR }}

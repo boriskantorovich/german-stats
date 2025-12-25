@@ -21,11 +21,6 @@ interface DemographicRow {
 
 interface ProcessedArea {
   PLR_ID: string
-  PLR_NAME: string
-  BZR_ID: string
-  BZR_NAME: string
-  BEZ_ID: string
-  BEZ_NAME: string
   population: number
   area_km2: number
   pop_0_14: number
@@ -80,11 +75,18 @@ async function main() {
     console.log('CSV Headers:', parsed.headers.join(', '))
     
     // Create lookup by PLR_ID
+    // The CSV has separate columns: BEZ (2 digits) + PGR (2 digits) + BZR (2 digits) + PLR (2 digits)
+    // Combined they form the 8-digit PLR_ID (e.g., "01" + "10" + "01" + "01" = "01100101")
     const demoLookup = new Map<string, DemographicRow>()
     demographics.forEach(row => {
-      const raumId = row['RAUMID'] || row['PLR_ID'] || ''
-      if (raumId) {
-        demoLookup.set(raumId, row)
+      const bez = (row['BEZ'] || '').padStart(2, '0')
+      const pgr = (row['PGR'] || '').padStart(2, '0')
+      const bzr = (row['BZR'] || '').padStart(2, '0')
+      const plr = (row['PLR'] || '').padStart(2, '0')
+      const fullId = bez + pgr + bzr + plr
+      
+      if (fullId && fullId !== '00000000') {
+        demoLookup.set(fullId, row)
       }
     })
     
@@ -99,11 +101,29 @@ async function main() {
       // Calculate area from geometry (approximate)
       const area_km2 = calculateAreaKm2(feature.geometry as GeoJSON.Geometry)
       
-      // Extract population values (column names may vary - adjust based on actual CSV)
-      const population = demo ? parseGermanNumber(demo['E_E'] || demo['INSGESAMT'] || '0') : 0
-      const pop_0_14 = demo ? parseGermanNumber(demo['E_U15'] || '0') : 0
-      const pop_15_64 = demo ? parseGermanNumber(demo['E_15U65'] || '0') : 0
-      const pop_65_plus = demo ? parseGermanNumber(demo['E_65U110'] || '0') : 0
+      // Extract population values from real CSV columns
+      // E_E = total population
+      // E_EU1 = under 1 year, E_E1U6 = 1 to under 6, E_E6U15 = 6 to under 15
+      // E_E15U18 = 15 to under 18, E_E18U25 = 18 to under 25
+      // E_E25U55 = 25 to under 55, E_E55U65 = 55 to under 65
+      // E_E65U80 = 65 to under 80, E_E80U110 = 80+
+      const population = demo ? parseGermanNumber(demo['E_E'] || '0') : 0
+      
+      // Use aggregated age groups from CSV
+      const ew_u1 = demo ? parseGermanNumber(demo['E_EU1'] || '0') : 0
+      const ew_1_6 = demo ? parseGermanNumber(demo['E_E1U6'] || '0') : 0
+      const ew_6_15 = demo ? parseGermanNumber(demo['E_E6U15'] || '0') : 0
+      const ew_15_18 = demo ? parseGermanNumber(demo['E_E15U18'] || '0') : 0
+      const ew_18_25 = demo ? parseGermanNumber(demo['E_E18U25'] || '0') : 0
+      const ew_25_55 = demo ? parseGermanNumber(demo['E_E25U55'] || '0') : 0
+      const ew_55_65 = demo ? parseGermanNumber(demo['E_E55U65'] || '0') : 0
+      const ew_65_80 = demo ? parseGermanNumber(demo['E_E65U80'] || '0') : 0
+      const ew_80_plus = demo ? parseGermanNumber(demo['E_E80U110'] || '0') : 0
+      
+      // Calculate standard age groups
+      const pop_0_14 = ew_u1 + ew_1_6 + ew_6_15  // 0-14 years
+      const pop_15_64 = ew_15_18 + ew_18_25 + ew_25_55 + ew_55_65  // 15-64 years (working age)
+      const pop_65_plus = ew_65_80 + ew_80_plus  // 65+ years (retirement age)
       
       const density = area_km2 > 0 ? population / area_km2 : 0
       const pct_0_14 = population > 0 ? (pop_0_14 / population) * 100 : 0
@@ -112,11 +132,6 @@ async function main() {
       
       processedAreas.push({
         PLR_ID: plrId,
-        PLR_NAME: (props['PLR_NAME'] || props['plr_name'] || '') as string,
-        BZR_ID: (props['BZR_ID'] || props['bzr_id'] || '') as string,
-        BZR_NAME: (props['BZR_NAME'] || props['bzr_name'] || '') as string,
-        BEZ_ID: (props['BEZ_ID'] || props['bez_id'] || '') as string,
-        BEZ_NAME: (props['BEZ_NAME'] || props['bez_name'] || '') as string,
         population,
         area_km2,
         pop_0_14,
