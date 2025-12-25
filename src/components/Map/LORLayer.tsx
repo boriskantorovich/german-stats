@@ -5,12 +5,27 @@ import { NO_DATA_COLOR, SELECTED_OUTLINE_COLOR, DEFAULT_OUTLINE_COLOR } from '..
 import type { FillLayerSpecification, LineLayerSpecification } from 'maplibre-gl'
 
 const PMTILES_URL = 'pmtiles:///data/berlin-lor.pmtiles'
-const SOURCE_LAYER = 'planungsraeume'
+
+// Layer configuration by admin level
+const LAYER_CONFIG = {
+  planungsraum: {
+    sourceLayer: 'planungsraeume',
+    idProperty: 'PLR_ID',
+  },
+  bezirk: {
+    sourceLayer: 'bezirke',
+    idProperty: 'BEZ_ID',
+  },
+} as const
 
 export function LORLayer() {
+  const adminLevel = useAppStore((s) => s.adminLevel)
   const selectedAreaId = useAppStore((s) => s.selectedAreaId)
   const hoveredAreaId = useAppStore((s) => s.hoveredAreaId)
   const { colorExpression, indicator } = useLayerConfig()
+
+  const config = LAYER_CONFIG[adminLevel]
+  const { sourceLayer, idProperty } = config
 
   // Fill layer paint specification
   const fillPaint: FillLayerSpecification['paint'] = {
@@ -22,9 +37,9 @@ export function LORLayer() {
     ],
     'fill-opacity': [
       'case',
-      ['==', ['get', 'PLR_ID'], selectedAreaId ?? ''],
+      ['==', ['get', idProperty], selectedAreaId ?? ''],
       0.9,
-      ['==', ['get', 'PLR_ID'], hoveredAreaId ?? ''],
+      ['==', ['get', idProperty], hoveredAreaId ?? ''],
       0.8,
       0.65,
     ],
@@ -34,35 +49,39 @@ export function LORLayer() {
   const linePaint: LineLayerSpecification['paint'] = {
     'line-color': [
       'case',
-      ['==', ['get', 'PLR_ID'], selectedAreaId ?? ''],
+      ['==', ['get', idProperty], selectedAreaId ?? ''],
       SELECTED_OUTLINE_COLOR,
       DEFAULT_OUTLINE_COLOR,
     ],
     'line-width': [
       'case',
-      ['==', ['get', 'PLR_ID'], selectedAreaId ?? ''],
+      ['==', ['get', idProperty], selectedAreaId ?? ''],
       2.5,
-      ['==', ['get', 'PLR_ID'], hoveredAreaId ?? ''],
+      ['==', ['get', idProperty], hoveredAreaId ?? ''],
       1.5,
-      0.5,
+      // Thicker default lines for Bezirke since they're larger
+      adminLevel === 'bezirk' ? 1.0 : 0.5,
     ],
   }
 
+  // Use key prop to force remount when admin level changes
+  // This ensures MapLibre properly switches source layers
   return (
     <Source id="lor-source" type="vector" url={PMTILES_URL}>
       <Layer
+        key={`${adminLevel}-fill`}
         id="lor-fill"
         type="fill"
-        source-layer={SOURCE_LAYER}
+        source-layer={sourceLayer}
         paint={fillPaint}
       />
       <Layer
+        key={`${adminLevel}-outline`}
         id="lor-outline"
         type="line"
-        source-layer={SOURCE_LAYER}
+        source-layer={sourceLayer}
         paint={linePaint}
       />
     </Source>
   )
 }
-

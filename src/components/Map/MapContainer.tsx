@@ -20,9 +20,22 @@ const MAP_STYLE = STADIA_KEY
   ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_KEY}`
   : 'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json'
 
+// ID property by admin level
+const ID_PROPERTY = {
+  planungsraum: 'PLR_ID',
+  bezirk: 'BEZ_ID',
+} as const
+
+// Name property by admin level
+const NAME_PROPERTY = {
+  planungsraum: 'PLR_NAME',
+  bezirk: 'BEZ_NAME',
+} as const
+
 export function MapContainer() {
   const mapRef = useRef<MapRef>(null)
   const { mapState, setViewport, setSelectedArea } = useMapState()
+  const adminLevel = useAppStore((s) => s.adminLevel)
   const setHoveredAreaId = useAppStore((s) => s.setHoveredAreaId)
   const setTooltip = useAppStore((s) => s.setTooltip)
 
@@ -66,10 +79,15 @@ export function MapContainer() {
         const feature = e.features[0]
         if (feature?.properties) {
           const props = feature.properties as Record<string, unknown>
-          setHoveredAreaId(props.PLR_ID as string)
+          const idProp = ID_PROPERTY[adminLevel]
+          const nameProp = NAME_PROPERTY[adminLevel]
+          const areaId = props[idProp] as string
+          const areaName = props[nameProp] as string || areaId
+          
+          setHoveredAreaId(areaId)
           setTooltip({
-            areaId: props.PLR_ID as string,
-            name: props.PLR_NAME as string,
+            areaId,
+            name: areaName,
             value: 0, // Will be filled by Tooltip component
             x: e.point.x,
             y: e.point.y,
@@ -77,7 +95,7 @@ export function MapContainer() {
         }
       }
     },
-    [setHoveredAreaId, setTooltip]
+    [adminLevel, setHoveredAreaId, setTooltip]
   )
 
   const onMouseLeave = useCallback(() => {
@@ -91,7 +109,8 @@ export function MapContainer() {
         const feature = e.features[0]
         if (feature?.properties) {
           const props = feature.properties as Record<string, unknown>
-          const areaId = props.PLR_ID as string
+          const idProp = ID_PROPERTY[adminLevel]
+          const areaId = props[idProp] as string
           // Update URL, which will sync to store via effect
           setSelectedArea(areaId)
         }
@@ -100,7 +119,7 @@ export function MapContainer() {
         setSelectedArea(null)
       }
     },
-    [setSelectedArea]
+    [adminLevel, setSelectedArea]
   )
 
   return (
@@ -127,4 +146,3 @@ export function MapContainer() {
     </Map>
   )
 }
-

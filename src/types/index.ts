@@ -1,3 +1,6 @@
+// Admin levels for Berlin
+export type AdminLevel = 'planungsraum' | 'bezirk'
+
 // LOR Area Types
 // The geometry data only contains PLR_ID (8-digit code like "01100101")
 // Format: BEZ(2 digits) + PGR(2) + BZR(2) + PLR(2)
@@ -117,6 +120,59 @@ export interface LORFeatureProperties {
   pct_0_14?: number
   pct_15_64?: number
   pct_65_plus?: number
+  [key: string]: string | number | undefined
+}
+
+// Bezirk (District) types
+export interface BezirkData {
+  BEZ_ID: string
+  BEZ_NAME: string
+  population: number
+  pop_male: number
+  pop_female: number
+  area_km2: number
+  pop_0_14: number
+  pop_15_64: number
+  pop_65_plus: number
+  density: number
+  pct_0_14: number
+  pct_15_64: number
+  pct_65_plus: number
+  pct_male: number
+  pct_female: number
+  planungsraeume_count: number
+  density_percentile: number
+  population_percentile: number
+  pct_0_14_percentile: number
+  pct_65_plus_percentile: number
+}
+
+export interface BezirkeProfilesData {
+  metadata: {
+    generated: string
+    source_date: string
+    total_bezirke: number
+  }
+  berlin_stats: {
+    population: number
+    total_bezirke: number
+    density_median: number
+    pct_0_14_median: number
+    pct_65_plus_median: number
+  }
+  bezirke: Record<string, BezirkData>
+}
+
+// GeoJSON Feature properties for Bezirke
+export interface BezirkFeatureProperties {
+  BEZ_ID: string
+  BEZ_NAME: string
+  population?: number
+  density?: number
+  pct_0_14?: number
+  pct_15_64?: number
+  pct_65_plus?: number
+  pct_male?: number
   [key: string]: string | number | undefined
 }
 

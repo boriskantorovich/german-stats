@@ -1,8 +1,12 @@
 import { create } from 'zustand'
 import type { MapRef } from 'react-map-gl/maplibre'
-import type { IndicatorId, TooltipData } from '../types'
+import type { AdminLevel, IndicatorId, TooltipData } from '../types'
 
 interface AppState {
+  // Admin level (Planungsraum or Bezirk)
+  adminLevel: AdminLevel
+  setAdminLevel: (level: AdminLevel) => void
+
   // Selected area
   selectedAreaId: string | null
   setSelectedAreaId: (id: string | null) => void
@@ -34,6 +38,15 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
+  // Admin level (Planungsraum or Bezirk)
+  adminLevel: 'planungsraum',
+  setAdminLevel: (level) => set({ 
+    adminLevel: level, 
+    selectedAreaId: null, 
+    hoveredAreaId: null,
+    isCardOpen: false 
+  }),
+
   // Selected area
   selectedAreaId: null,
   setSelectedAreaId: (id) => set({ selectedAreaId: id, isCardOpen: id !== null }),

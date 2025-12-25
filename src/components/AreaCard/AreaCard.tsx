@@ -40,10 +40,10 @@ export function AreaCard({ areaId }: AreaCardProps) {
       <header className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-display font-semibold text-text-primary">
-            {profile.PLR_NAME}
+            Planungsraum {profile.PLR_ID}
           </h2>
           <p className="text-sm text-text-secondary mt-1">
-            {profile.BZR_NAME} · {profile.BEZ_NAME}
+            District {profile.PLR_ID.slice(0, 2)}
           </p>
         </div>
         <button

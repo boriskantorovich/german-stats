@@ -1,17 +1,30 @@
 import { MapContainer } from '@/components/Map/MapContainer'
 import { AreaCard } from '@/components/AreaCard/AreaCard'
+import { BezirkCard } from '@/components/AreaCard/BezirkCard'
 import { MobileSheet } from '@/components/Layout/MobileSheet'
 import { SearchBox } from '@/components/Search/SearchBox'
 import { LayerSwitcher } from '@/components/Map/LayerSwitcher'
 import { Legend } from '@/components/Map/Legend'
 import { ShareButton } from '@/components/Controls/ShareButton'
 import { ThemeToggle } from '@/components/Controls/ThemeToggle'
+import { AdminLevelToggle } from '@/components/Controls/AdminLevelToggle'
 import { useAppStore } from '@/store/appStore'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export function AppShell() {
   const selectedAreaId = useAppStore((s) => s.selectedAreaId)
+  const adminLevel = useAppStore((s) => s.adminLevel)
   const isMobile = useMediaQuery('(max-width: 768px)')
+
+  // Render the appropriate card based on admin level
+  const renderCard = () => {
+    if (!selectedAreaId) return null
+    
+    if (adminLevel === 'bezirk') {
+      return <BezirkCard bezirkId={selectedAreaId} />
+    }
+    return <AreaCard areaId={selectedAreaId} />
+  }
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -21,6 +34,7 @@ export function AppShell() {
       {/* Controls overlay - top left */}
       <div className="absolute left-4 top-4 z-10 flex flex-col gap-3">
         <SearchBox />
+        <AdminLevelToggle />
         <LayerSwitcher />
       </div>
 
@@ -38,14 +52,14 @@ export function AppShell() {
       {/* Area Card - desktop sidebar */}
       {!isMobile && selectedAreaId && (
         <div className="absolute right-4 top-16 z-10 w-96 max-h-[calc(100vh-5rem)] overflow-y-auto">
-          <AreaCard areaId={selectedAreaId} />
+          {renderCard()}
         </div>
       )}
 
       {/* Area Card - mobile bottom sheet */}
       {isMobile && selectedAreaId && (
         <MobileSheet open={!!selectedAreaId}>
-          <AreaCard areaId={selectedAreaId} />
+          {renderCard()}
         </MobileSheet>
       )}
 
