@@ -14,6 +14,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 import * as turf from '@turf/turf'
 import { parseCSV, csvToObjects, parseGermanNumber } from './lib/csv-parser'
+import { calculateDemographics, aggregateDemographics, type RawDemographicData, type DemographicMetrics } from './lib/demographics'
 
 const INPUT_GEOMETRY = 'data/raw/lor-planungsraeume.geojson'
 const INPUT_DEMOGRAPHICS = 'data/raw/population-2024.csv'
@@ -37,39 +38,43 @@ const BEZIRK_NAMES: Record<string, string> = {
   '12': 'Reinickendorf',
 }
 
-interface DemographicRow {
-  RAUMID: string
-  BEZ: string
-  [key: string]: string
-}
-
-interface BezirkStats {
+interface BezirkStats extends DemographicMetrics {
   BEZ_ID: string
   BEZ_NAME: string
-  population: number
-  pop_male: number
-  pop_female: number
   area_km2: number
-  pop_0_14: number
-  pop_15_64: number
-  pop_65_plus: number
   density: number
-  pct_0_14: number
-  pct_15_64: number
-  pct_65_plus: number
-  pct_male: number
-  pct_female: number
   planungsraeume_count: number
+  // Percentiles
+  density_percentile: number
+  population_percentile: number
+  pct_0_14_percentile: number
+  pct_65_plus_percentile: number
+  sex_ratio_percentile: number
+  aging_index_percentile: number
 }
 
 function calculateAreaKm2(geometry: GeoJSON.Geometry): number {
   try {
-    // Use turf.area which returns area in square meters
     const areaM2 = turf.area(geometry)
     return areaM2 / 1_000_000 // Convert to km²
   } catch {
     return 0
   }
+}
+
+function calculatePercentiles(values: number[]): Map<number, number> {
+  const sorted = [...values].sort((a, b) => a - b)
+  const percentiles = new Map<number, number>()
+  
+  values.forEach(v => {
+    let count = 0
+    for (const sv of sorted) {
+      if (sv < v) count++
+    }
+    percentiles.set(v, (count / sorted.length) * 100)
+  })
+  
+  return percentiles
 }
 
 async function main() {
@@ -113,71 +118,34 @@ async function main() {
     }
     
     // ─────────────────────────────────────────────────────────────────────────
-    // 3. Read demographics and aggregate by Bezirk
+    // 3. Read demographics and calculate metrics for each Planungsraum
     // ─────────────────────────────────────────────────────────────────────────
     console.log('\nReading demographics...')
     const csvText = readFileSync(INPUT_DEMOGRAPHICS, 'utf-8')
     const parsed = parseCSV(csvText, { delimiter: ';' })
-    const demographics = csvToObjects<DemographicRow>(parsed)
+    const demographics = csvToObjects<RawDemographicData>(parsed)
     console.log(`  Loaded ${demographics.length} demographic rows`)
     
-    // Aggregate demographics by Bezirk
-    const bezirkDemographics = new Map<string, {
-      population: number
-      pop_male: number
-      pop_female: number
-      pop_0_14: number
-      pop_15_64: number
-      pop_65_plus: number
-    }>()
+    // Calculate demographics for each Planungsraum
+    const planungsraumDemographics = new Map<string, DemographicMetrics>()
     
     for (const row of demographics) {
-      const bezId = (row['BEZ'] || '').padStart(2, '0')
-      if (!bezId || bezId === '00') continue
+      const bezId = (row.BEZ || '').padStart(2, '0')
+      const pgrId = (row.PGR || '').padStart(2, '0')
+      const bzrId = (row.BZR || '').padStart(2, '0')
+      const plrId = (row.PLR || '').padStart(2, '0')
+      const fullId = bezId + pgrId + bzrId + plrId
       
-      const population = parseGermanNumber(row['E_E'] || '0')
-      const pop_male = parseGermanNumber(row['E_EM'] || '0')
-      const pop_female = parseGermanNumber(row['E_EW'] || '0')
+      if (!fullId || fullId === '00000000') continue
       
-      // Age groups from CSV
-      const ew_u1 = parseGermanNumber(row['E_EU1'] || '0')
-      const ew_1_6 = parseGermanNumber(row['E_E1U6'] || '0')
-      const ew_6_15 = parseGermanNumber(row['E_E6U15'] || '0')
-      const ew_15_18 = parseGermanNumber(row['E_E15U18'] || '0')
-      const ew_18_25 = parseGermanNumber(row['E_E18U25'] || '0')
-      const ew_25_55 = parseGermanNumber(row['E_E25U55'] || '0')
-      const ew_55_65 = parseGermanNumber(row['E_E55U65'] || '0')
-      const ew_65_80 = parseGermanNumber(row['E_E65U80'] || '0')
-      const ew_80_plus = parseGermanNumber(row['E_E80U110'] || '0')
-      
-      const pop_0_14 = ew_u1 + ew_1_6 + ew_6_15
-      const pop_15_64 = ew_15_18 + ew_18_25 + ew_25_55 + ew_55_65
-      const pop_65_plus = ew_65_80 + ew_80_plus
-      
-      if (!bezirkDemographics.has(bezId)) {
-        bezirkDemographics.set(bezId, {
-          population: 0,
-          pop_male: 0,
-          pop_female: 0,
-          pop_0_14: 0,
-          pop_15_64: 0,
-          pop_65_plus: 0,
-        })
-      }
-      
-      const agg = bezirkDemographics.get(bezId)!
-      agg.population += population
-      agg.pop_male += pop_male
-      agg.pop_female += pop_female
-      agg.pop_0_14 += pop_0_14
-      agg.pop_15_64 += pop_15_64
-      agg.pop_65_plus += pop_65_plus
+      const metrics = calculateDemographics(row, parseGermanNumber)
+      planungsraumDemographics.set(fullId, metrics)
     }
     
     // ─────────────────────────────────────────────────────────────────────────
-    // 4. Dissolve polygons and create Bezirk features
+    // 4. Dissolve polygons and aggregate demographics for each Bezirk
     // ─────────────────────────────────────────────────────────────────────────
-    console.log('\nDissolving polygons...')
+    console.log('\nDissolving polygons and aggregating data...')
     const bezirkFeatures: GeoJSON.Feature[] = []
     const bezirkStats: BezirkStats[] = []
     
@@ -188,10 +156,6 @@ async function main() {
       let dissolved: GeoJSON.Feature | null = null
       
       try {
-        // Create a FeatureCollection and use turf.dissolve or union
-        const fc = turf.featureCollection(features as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>[])
-        
-        // Use turf.union to merge all polygons
         let unionResult = features[0] as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
         for (let i = 1; i < features.length; i++) {
           const nextFeature = features[i] as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
@@ -206,7 +170,6 @@ async function main() {
         dissolved = unionResult
       } catch (e) {
         console.error(`    Error dissolving ${bezId}:`, e)
-        // Fallback: use first polygon (not ideal but prevents crash)
         dissolved = features[0]
       }
       
@@ -215,40 +178,34 @@ async function main() {
       // Calculate area from dissolved geometry
       const area_km2 = calculateAreaKm2(dissolved.geometry)
       
-      // Get demographics for this Bezirk
-      const demo = bezirkDemographics.get(bezId) || {
-        population: 0,
-        pop_male: 0,
-        pop_female: 0,
-        pop_0_14: 0,
-        pop_15_64: 0,
-        pop_65_plus: 0,
+      // Aggregate demographics from all Planungsräume in this Bezirk
+      const plrMetrics: DemographicMetrics[] = []
+      for (const feature of features) {
+        const props = feature.properties as Record<string, unknown>
+        const plrId = (props['PLR_ID'] || props['plr_id'] || '') as string
+        const metrics = planungsraumDemographics.get(plrId)
+        if (metrics) {
+          plrMetrics.push(metrics)
+        }
       }
       
-      const density = area_km2 > 0 ? demo.population / area_km2 : 0
-      const pct_0_14 = demo.population > 0 ? (demo.pop_0_14 / demo.population) * 100 : 0
-      const pct_15_64 = demo.population > 0 ? (demo.pop_15_64 / demo.population) * 100 : 0
-      const pct_65_plus = demo.population > 0 ? (demo.pop_65_plus / demo.population) * 100 : 0
-      const pct_male = demo.population > 0 ? (demo.pop_male / demo.population) * 100 : 0
-      const pct_female = demo.population > 0 ? (demo.pop_female / demo.population) * 100 : 0
+      const aggregatedDemo = aggregateDemographics(plrMetrics)
+      const density = area_km2 > 0 ? aggregatedDemo.population / area_km2 : 0
       
       const stats: BezirkStats = {
         BEZ_ID: bezId,
         BEZ_NAME: BEZIRK_NAMES[bezId] || `Bezirk ${bezId}`,
-        population: demo.population,
-        pop_male: demo.pop_male,
-        pop_female: demo.pop_female,
-        area_km2,
-        pop_0_14: demo.pop_0_14,
-        pop_15_64: demo.pop_15_64,
-        pop_65_plus: demo.pop_65_plus,
-        density,
-        pct_0_14,
-        pct_15_64,
-        pct_65_plus,
-        pct_male,
-        pct_female,
         planungsraeume_count: features.length,
+        area_km2,
+        density,
+        ...aggregatedDemo,
+        // Percentiles will be calculated below
+        density_percentile: 0,
+        population_percentile: 0,
+        pct_0_14_percentile: 0,
+        pct_65_plus_percentile: 0,
+        sex_ratio_percentile: 0,
+        aging_index_percentile: 0,
       }
       
       bezirkStats.push(stats)
@@ -259,12 +216,13 @@ async function main() {
         properties: {
           BEZ_ID: bezId,
           BEZ_NAME: BEZIRK_NAMES[bezId] || `Bezirk ${bezId}`,
-          population: Math.round(demo.population),
+          population: Math.round(aggregatedDemo.population),
           density: Math.round(density),
-          pct_0_14: Math.round(pct_0_14 * 10) / 10,
-          pct_15_64: Math.round(pct_15_64 * 10) / 10,
-          pct_65_plus: Math.round(pct_65_plus * 10) / 10,
-          pct_male: Math.round(pct_male * 10) / 10,
+          pct_0_14: Math.round(aggregatedDemo.pct_0_14 * 10) / 10,
+          pct_15_64: Math.round(aggregatedDemo.pct_15_64 * 10) / 10,
+          pct_65_plus: Math.round(aggregatedDemo.pct_65_plus * 10) / 10,
+          pct_male: Math.round(aggregatedDemo.pct_male * 10) / 10,
+          pct_female: Math.round(aggregatedDemo.pct_female * 10) / 10,
         },
         geometry: dissolved.geometry,
       }
@@ -283,26 +241,21 @@ async function main() {
     // ─────────────────────────────────────────────────────────────────────────
     console.log('\nCalculating percentiles...')
     
-    const calcPercentile = (value: number, sortedArr: number[]) => {
-      let count = 0
-      for (const v of sortedArr) {
-        if (v < value) count++
-      }
-      return (count / sortedArr.length) * 100
-    }
+    const densityPercentiles = calculatePercentiles(bezirkStats.map(s => s.density))
+    const populationPercentiles = calculatePercentiles(bezirkStats.map(s => s.population))
+    const pct014Percentiles = calculatePercentiles(bezirkStats.map(s => s.pct_0_14))
+    const pct65Percentiles = calculatePercentiles(bezirkStats.map(s => s.pct_65_plus))
+    const sexRatioPercentiles = calculatePercentiles(bezirkStats.map(s => s.sex_ratio))
+    const agingIndexPercentiles = calculatePercentiles(bezirkStats.map(s => s.aging_index))
     
-    const sortedDensities = [...bezirkStats.map(s => s.density)].sort((a, b) => a - b)
-    const sortedPopulations = [...bezirkStats.map(s => s.population)].sort((a, b) => a - b)
-    const sortedPct014 = [...bezirkStats.map(s => s.pct_0_14)].sort((a, b) => a - b)
-    const sortedPct65 = [...bezirkStats.map(s => s.pct_65_plus)].sort((a, b) => a - b)
-    
-    const bezirkProfiles = bezirkStats.map(stats => ({
-      ...stats,
-      density_percentile: calcPercentile(stats.density, sortedDensities),
-      population_percentile: calcPercentile(stats.population, sortedPopulations),
-      pct_0_14_percentile: calcPercentile(stats.pct_0_14, sortedPct014),
-      pct_65_plus_percentile: calcPercentile(stats.pct_65_plus, sortedPct65),
-    }))
+    bezirkStats.forEach(stats => {
+      stats.density_percentile = densityPercentiles.get(stats.density) || 0
+      stats.population_percentile = populationPercentiles.get(stats.population) || 0
+      stats.pct_0_14_percentile = pct014Percentiles.get(stats.pct_0_14) || 0
+      stats.pct_65_plus_percentile = pct65Percentiles.get(stats.pct_65_plus) || 0
+      stats.sex_ratio_percentile = sexRatioPercentiles.get(stats.sex_ratio) || 0
+      stats.aging_index_percentile = agingIndexPercentiles.get(stats.aging_index) || 0
+    })
     
     // ─────────────────────────────────────────────────────────────────────────
     // 6. Write output files
@@ -318,21 +271,26 @@ async function main() {
     console.log(`  Written ${OUTPUT_BEZIRKE}`)
     
     // Write Bezirke profiles
+    const sortedDensities = bezirkStats.map(s => s.density).sort((a, b) => a - b)
+    const sortedPct014 = bezirkStats.map(s => s.pct_0_14).sort((a, b) => a - b)
+    const sortedPct65 = bezirkStats.map(s => s.pct_65_plus).sort((a, b) => a - b)
+    
     const getMedian = (arr: number[]) => arr[Math.floor(arr.length / 2)] || 0
+    
     const profiles = {
       metadata: {
         generated: new Date().toISOString(),
         source_date: '2024-12-31',
-        total_bezirke: bezirkProfiles.length,
+        total_bezirke: bezirkStats.length,
       },
       berlin_stats: {
         population: bezirkStats.reduce((sum, s) => sum + s.population, 0),
-        total_bezirke: bezirkProfiles.length,
+        total_bezirke: bezirkStats.length,
         density_median: Math.round(getMedian(sortedDensities)),
         pct_0_14_median: Math.round(getMedian(sortedPct014) * 10) / 10,
         pct_65_plus_median: Math.round(getMedian(sortedPct65) * 10) / 10,
       },
-      bezirke: Object.fromEntries(bezirkProfiles.map(b => [b.BEZ_ID, b])),
+      bezirke: Object.fromEntries(bezirkStats.map(b => [b.BEZ_ID, b])),
     }
     writeFileSync(OUTPUT_PROFILES, JSON.stringify(profiles, null, 2))
     console.log(`  Written ${OUTPUT_PROFILES}`)
@@ -357,4 +315,3 @@ async function main() {
 }
 
 main()
-

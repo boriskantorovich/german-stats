@@ -7,30 +7,64 @@ export type AdminLevel = 'planungsraum' | 'bezirk'
 // Example: "01100101" = Bezirk 01, Prognoseraum 10, Bezirksregion 01, Planungsraum 01
 export interface ProcessedArea {
   PLR_ID: string        // 8-digit planning area identifier
-  // Raw values from CSV
+  
+  // Core demographics
   population: number    // E_E: Total population
+  pop_male: number      // E_EM: Male population
+  pop_female: number    // E_EW: Female population
   area_km2: number      // Calculated from geometry
+  density: number       // pop / km²
 
-  // Age groups (aggregated from CSV columns)
-  // Source: E_EU1 + E_E1U6 + E_E6U15 = 0-14 years
-  //         E_E15U18 + E_E18U25 + E_E25U55 + E_E55U65 = 15-64 years
-  //         E_E65U80 + E_E80U110 = 65+ years
+  // Gender metrics
+  pct_male: number      // Male percentage
+  pct_female: number    // Female percentage
+  sex_ratio: number     // Males per 100 females
+
+  // Broad age groups
   pop_0_14: number      // Children and youth
   pop_15_64: number     // Working age
   pop_65_plus: number   // Retirement age
+  pct_0_14: number      // Percentage 0-14
+  pct_15_64: number     // Percentage 15-64
+  pct_65_plus: number   // Percentage 65+
 
-  // Computed - Derived metrics
-  density: number       // pop / km²
-  pct_0_14: number      // percentage of population 0-14
-  pct_15_64: number     // percentage of population 15-64
-  pct_65_plus: number   // percentage of population 65+
+  // Granular age bands
+  pop_0_5: number
+  pop_6_14: number
+  pop_15_17: number
+  pop_18_24: number
+  pop_25_34: number
+  pop_35_44: number
+  pop_45_54: number
+  pop_55_64: number
+  pop_65_79: number
+  pop_80_plus: number
+  
+  pct_0_5: number
+  pct_6_14: number
+  pct_15_17: number
+  pct_18_24: number
+  pct_25_34: number
+  pct_35_44: number
+  pct_45_54: number
+  pct_55_64: number
+  pct_65_79: number
+  pct_80_plus: number
 
-  // Ranks/percentiles (computed across all areas)
+  // Dependency ratios
+  aging_index: number        // (65+ / 0-14) * 100
+  dependency_ratio: number   // ((0-14 + 65+) / 15-64) * 100
+  elderly_dependency: number // (65+ / 15-64) * 100
+  youth_dependency: number   // (0-14 / 15-64) * 100
+
+  // Percentiles (computed across all areas)
   density_percentile: number
   pct_0_14_percentile: number
   pct_15_64_percentile: number
   pct_65_plus_percentile: number
   population_percentile: number
+  sex_ratio_percentile: number
+  aging_index_percentile: number
 }
 
 // Berlin aggregate stats
@@ -71,9 +105,30 @@ export interface MapState {
 export type IndicatorId =
   | 'population'
   | 'density'
+  // Gender
+  | 'pct_male'
+  | 'pct_female'
+  | 'sex_ratio'
+  // Broad age groups
   | 'pct_0_14'
   | 'pct_15_64'
   | 'pct_65_plus'
+  // Granular age bands
+  | 'pct_0_5'
+  | 'pct_6_14'
+  | 'pct_15_17'
+  | 'pct_18_24'
+  | 'pct_25_34'
+  | 'pct_35_44'
+  | 'pct_45_54'
+  | 'pct_55_64'
+  | 'pct_65_79'
+  | 'pct_80_plus'
+  // Dependency indicators
+  | 'aging_index'
+  | 'dependency_ratio'
+  | 'elderly_dependency'
+  | 'youth_dependency'
 
 export interface IndicatorMeta {
   id: IndicatorId
@@ -127,24 +182,64 @@ export interface LORFeatureProperties {
 export interface BezirkData {
   BEZ_ID: string
   BEZ_NAME: string
+  planungsraeume_count: number
+  
+  // Core demographics
   population: number
   pop_male: number
   pop_female: number
   area_km2: number
+  density: number
+
+  // Gender metrics
+  pct_male: number
+  pct_female: number
+  sex_ratio: number
+
+  // Broad age groups
   pop_0_14: number
   pop_15_64: number
   pop_65_plus: number
-  density: number
   pct_0_14: number
   pct_15_64: number
   pct_65_plus: number
-  pct_male: number
-  pct_female: number
-  planungsraeume_count: number
+
+  // Granular age bands
+  pop_0_5: number
+  pop_6_14: number
+  pop_15_17: number
+  pop_18_24: number
+  pop_25_34: number
+  pop_35_44: number
+  pop_45_54: number
+  pop_55_64: number
+  pop_65_79: number
+  pop_80_plus: number
+  
+  pct_0_5: number
+  pct_6_14: number
+  pct_15_17: number
+  pct_18_24: number
+  pct_25_34: number
+  pct_35_44: number
+  pct_45_54: number
+  pct_55_64: number
+  pct_65_79: number
+  pct_80_plus: number
+
+  // Dependency ratios
+  aging_index: number
+  dependency_ratio: number
+  elderly_dependency: number
+  youth_dependency: number
+
+  // Percentiles
   density_percentile: number
   population_percentile: number
   pct_0_14_percentile: number
   pct_65_plus_percentile: number
+  sex_ratio_percentile: number
+  aging_index_percentile: number
 }
 
 export interface BezirkeProfilesData {
