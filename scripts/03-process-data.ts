@@ -163,14 +163,37 @@ async function main() {
       
       if (area) {
         Object.assign(props, {
+          // Core
           population: area.population,
           density: Math.round(area.density),
-          pct_0_14: Math.round(area.pct_0_14 * 10) / 10,
-          pct_15_64: Math.round(area.pct_15_64 * 10) / 10,
-          pct_65_plus: Math.round(area.pct_65_plus * 10) / 10,
+          
+          // Gender
           pct_male: Math.round(area.pct_male * 10) / 10,
           pct_female: Math.round(area.pct_female * 10) / 10,
           sex_ratio: Math.round(area.sex_ratio * 10) / 10,
+          
+          // Broad age groups
+          pct_0_14: Math.round(area.pct_0_14 * 10) / 10,
+          pct_15_64: Math.round(area.pct_15_64 * 10) / 10,
+          pct_65_plus: Math.round(area.pct_65_plus * 10) / 10,
+          
+          // Granular age bands
+          pct_0_5: Math.round(area.pct_0_5 * 10) / 10,
+          pct_6_14: Math.round(area.pct_6_14 * 10) / 10,
+          pct_15_17: Math.round(area.pct_15_17 * 10) / 10,
+          pct_18_24: Math.round(area.pct_18_24 * 10) / 10,
+          pct_25_34: Math.round(area.pct_25_34 * 10) / 10,
+          pct_35_44: Math.round(area.pct_35_44 * 10) / 10,
+          pct_45_54: Math.round(area.pct_45_54 * 10) / 10,
+          pct_55_64: Math.round(area.pct_55_64 * 10) / 10,
+          pct_65_79: Math.round(area.pct_65_79 * 10) / 10,
+          pct_80_plus: Math.round(area.pct_80_plus * 10) / 10,
+          
+          // Dependency indicators
+          aging_index: Math.round(area.aging_index * 10) / 10,
+          dependency_ratio: Math.round(area.dependency_ratio * 10) / 10,
+          elderly_dependency: Math.round(area.elderly_dependency * 10) / 10,
+          youth_dependency: Math.round(area.youth_dependency * 10) / 10,
         })
       }
     })

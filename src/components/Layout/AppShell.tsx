@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { MapContainer } from '@/components/Map/MapContainer'
 import { AreaCard } from '@/components/AreaCard/AreaCard'
 import { BezirkCard } from '@/components/AreaCard/BezirkCard'
@@ -10,11 +11,22 @@ import { ThemeToggle } from '@/components/Controls/ThemeToggle'
 import { AdminLevelToggle } from '@/components/Controls/AdminLevelToggle'
 import { useAppStore } from '@/store/appStore'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useMapState } from '@/hooks/useMapState'
 
 export function AppShell() {
   const selectedAreaId = useAppStore((s) => s.selectedAreaId)
   const adminLevel = useAppStore((s) => s.adminLevel)
+  const activeLayer = useAppStore((s) => s.activeLayer)
+  const setActiveLayer = useAppStore((s) => s.setActiveLayer)
   const isMobile = useMediaQuery('(max-width: 768px)')
+  const { mapState } = useMapState()
+
+  // Sync URL layer param with store
+  useEffect(() => {
+    if (mapState.layer && mapState.layer !== activeLayer) {
+      setActiveLayer(mapState.layer)
+    }
+  }, [mapState.layer, activeLayer, setActiveLayer])
 
   // Render the appropriate card based on admin level
   const renderCard = () => {

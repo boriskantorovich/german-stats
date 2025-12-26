@@ -1,6 +1,29 @@
 import type { MapState, IndicatorId } from '../types'
 
-const VALID_LAYERS: IndicatorId[] = ['population', 'density', 'pct_0_14', 'pct_15_64', 'pct_65_plus']
+const VALID_LAYERS: IndicatorId[] = [
+  'population',
+  'density',
+  'pct_0_14',
+  'pct_15_64',
+  'pct_65_plus',
+  'pct_male',
+  'pct_female',
+  'sex_ratio',
+  'pct_0_5',
+  'pct_6_14',
+  'pct_15_17',
+  'pct_18_24',
+  'pct_25_34',
+  'pct_35_44',
+  'pct_45_54',
+  'pct_55_64',
+  'pct_65_79',
+  'pct_80_plus',
+  'aging_index',
+  'dependency_ratio',
+  'elderly_dependency',
+  'youth_dependency',
+]
 
 /**
  * Default map state

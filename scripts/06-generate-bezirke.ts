@@ -216,13 +216,38 @@ async function main() {
         properties: {
           BEZ_ID: bezId,
           BEZ_NAME: BEZIRK_NAMES[bezId] || `Bezirk ${bezId}`,
+          
+          // Core
           population: Math.round(aggregatedDemo.population),
           density: Math.round(density),
+          
+          // Gender
+          pct_male: Math.round(aggregatedDemo.pct_male * 10) / 10,
+          pct_female: Math.round(aggregatedDemo.pct_female * 10) / 10,
+          sex_ratio: Math.round(aggregatedDemo.sex_ratio * 10) / 10,
+          
+          // Broad age groups
           pct_0_14: Math.round(aggregatedDemo.pct_0_14 * 10) / 10,
           pct_15_64: Math.round(aggregatedDemo.pct_15_64 * 10) / 10,
           pct_65_plus: Math.round(aggregatedDemo.pct_65_plus * 10) / 10,
-          pct_male: Math.round(aggregatedDemo.pct_male * 10) / 10,
-          pct_female: Math.round(aggregatedDemo.pct_female * 10) / 10,
+          
+          // Granular age bands
+          pct_0_5: Math.round(aggregatedDemo.pct_0_5 * 10) / 10,
+          pct_6_14: Math.round(aggregatedDemo.pct_6_14 * 10) / 10,
+          pct_15_17: Math.round(aggregatedDemo.pct_15_17 * 10) / 10,
+          pct_18_24: Math.round(aggregatedDemo.pct_18_24 * 10) / 10,
+          pct_25_34: Math.round(aggregatedDemo.pct_25_34 * 10) / 10,
+          pct_35_44: Math.round(aggregatedDemo.pct_35_44 * 10) / 10,
+          pct_45_54: Math.round(aggregatedDemo.pct_45_54 * 10) / 10,
+          pct_55_64: Math.round(aggregatedDemo.pct_55_64 * 10) / 10,
+          pct_65_79: Math.round(aggregatedDemo.pct_65_79 * 10) / 10,
+          pct_80_plus: Math.round(aggregatedDemo.pct_80_plus * 10) / 10,
+          
+          // Dependency indicators
+          aging_index: Math.round(aggregatedDemo.aging_index * 10) / 10,
+          dependency_ratio: Math.round(aggregatedDemo.dependency_ratio * 10) / 10,
+          elderly_dependency: Math.round(aggregatedDemo.elderly_dependency * 10) / 10,
+          youth_dependency: Math.round(aggregatedDemo.youth_dependency * 10) / 10,
         },
         geometry: dissolved.geometry,
       }
