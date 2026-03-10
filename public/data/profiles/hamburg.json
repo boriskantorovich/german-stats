@@ -1,0 +1,633 @@
+{
+  "metadata": {
+    "generated": "2025-12-26T23:25:35.000Z",
+    "source_date": "2023",
+    "total_areas": 104
+  },
+  "areas": {
+    "101": {
+      "id": "101",
+      "name": "Hamburg-Altstadt",
+      "population": 274,
+      "population_percentile": 13
+    },
+    "102": {
+      "id": "102",
+      "name": "HafenCity",
+      "population": 1535,
+      "population_percentile": 37
+    },
+    "103": {
+      "id": "103",
+      "name": "Neustadt",
+      "population": 1373,
+      "population_percentile": 34
+    },
+    "104": {
+      "id": "104",
+      "name": "St. Pauli",
+      "population": 2946,
+      "population_percentile": 58
+    },
+    "105": {
+      "id": "105",
+      "name": "St. Georg",
+      "population": 1467,
+      "population_percentile": 36
+    },
+    "106": {
+      "id": "106",
+      "name": "Hammerbrook",
+      "population": 956,
+      "population_percentile": 24
+    },
+    "107": {
+      "id": "107",
+      "name": "Borgfelde",
+      "population": 1196,
+      "population_percentile": 28
+    },
+    "108": {
+      "id": "108",
+      "name": "Hamm",
+      "population": 4629,
+      "population_percentile": 75
+    },
+    "111": {
+      "id": "111",
+      "name": "Horn",
+      "population": 6301,
+      "population_percentile": 86
+    },
+    "112": {
+      "id": "112",
+      "name": "Billstedt",
+      "population": 14150,
+      "population_percentile": 98
+    },
+    "113": {
+      "id": "113",
+      "name": "Billbrook",
+      "population": 565,
+      "population_percentile": 16
+    },
+    "114": {
+      "id": "114",
+      "name": "Rothenburgsort",
+      "population": 1895,
+      "population_percentile": 40
+    },
+    "115": {
+      "id": "115",
+      "name": "Veddel",
+      "population": 818,
+      "population_percentile": 21
+    },
+    "116": {
+      "id": "116",
+      "name": "Wilhelmsburg",
+      "population": 10982,
+      "population_percentile": 97
+    },
+    "117": {
+      "id": "117",
+      "name": "Kleiner Grasbrook",
+      "population": 53,
+      "population_percentile": 5
+    },
+    "118": {
+      "id": "118",
+      "name": "Steinwerder",
+      "population": 0,
+      "population_percentile": 0
+    },
+    "119": {
+      "id": "119",
+      "name": "Waltershof",
+      "population": 0,
+      "population_percentile": 0
+    },
+    "120": {
+      "id": "120",
+      "name": "Finkenwerder",
+      "population": 1983,
+      "population_percentile": 43
+    },
+    "121": {
+      "id": "121",
+      "name": "Neuwerk",
+      "population": 4,
+      "population_percentile": 3
+    },
+    "201": {
+      "id": "201",
+      "name": "Altona-Altstadt",
+      "population": 4468,
+      "population_percentile": 72
+    },
+    "202": {
+      "id": "202",
+      "name": "Sternschanze",
+      "population": 1011,
+      "population_percentile": 26
+    },
+    "203": {
+      "id": "203",
+      "name": "Altona-Nord",
+      "population": 4397,
+      "population_percentile": 70
+    },
+    "204": {
+      "id": "204",
+      "name": "Ottensen",
+      "population": 5223,
+      "population_percentile": 80
+    },
+    "205": {
+      "id": "205",
+      "name": "Bahrenfeld",
+      "population": 5610,
+      "population_percentile": 83
+    },
+    "206": {
+      "id": "206",
+      "name": "Groß Flottbek",
+      "population": 2215,
+      "population_percentile": 47
+    },
+    "207": {
+      "id": "207",
+      "name": "Othmarschen",
+      "population": 3432,
+      "population_percentile": 63
+    },
+    "208": {
+      "id": "208",
+      "name": "Lurup",
+      "population": 7697,
+      "population_percentile": 93
+    },
+    "209": {
+      "id": "209",
+      "name": "Osdorf",
+      "population": 5216,
+      "population_percentile": 79
+    },
+    "210": {
+      "id": "210",
+      "name": "Nienstedten",
+      "population": 1309,
+      "population_percentile": 33
+    },
+    "211": {
+      "id": "211",
+      "name": "Blankenese",
+      "population": 2453,
+      "population_percentile": 53
+    },
+    "212": {
+      "id": "212",
+      "name": "Iserbrook",
+      "population": 2064,
+      "population_percentile": 45
+    },
+    "213": {
+      "id": "213",
+      "name": "Sülldorf",
+      "population": 1799,
+      "population_percentile": 39
+    },
+    "214": {
+      "id": "214",
+      "name": "Rissen",
+      "population": 3190,
+      "population_percentile": 60
+    },
+    "301": {
+      "id": "301",
+      "name": "Eimsbüttel",
+      "population": 7234,
+      "population_percentile": 90
+    },
+    "302": {
+      "id": "302",
+      "name": "Rotherbaum",
+      "population": 2240,
+      "population_percentile": 48
+    },
+    "303": {
+      "id": "303",
+      "name": "Harvestehude",
+      "population": 2621,
+      "population_percentile": 55
+    },
+    "304": {
+      "id": "304",
+      "name": "Hoheluft-West",
+      "population": 1676,
+      "population_percentile": 38
+    },
+    "305": {
+      "id": "305",
+      "name": "Lokstedt",
+      "population": 5493,
+      "population_percentile": 81
+    },
+    "306": {
+      "id": "306",
+      "name": "Niendorf",
+      "population": 6721,
+      "population_percentile": 87
+    },
+    "307": {
+      "id": "307",
+      "name": "Schnelsen",
+      "population": 6005,
+      "population_percentile": 85
+    },
+    "308": {
+      "id": "308",
+      "name": "Eidelstedt",
+      "population": 6752,
+      "population_percentile": 88
+    },
+    "309": {
+      "id": "309",
+      "name": "Stellingen",
+      "population": 4455,
+      "population_percentile": 71
+    },
+    "401": {
+      "id": "401",
+      "name": "Hoheluft-Ost",
+      "population": 1263,
+      "population_percentile": 32
+    },
+    "402": {
+      "id": "402",
+      "name": "Eppendorf",
+      "population": 3376,
+      "population_percentile": 63
+    },
+    "403": {
+      "id": "403",
+      "name": "Groß Borstel",
+      "population": 2064,
+      "population_percentile": 45
+    },
+    "404": {
+      "id": "404",
+      "name": "Alsterdorf",
+      "population": 2401,
+      "population_percentile": 52
+    },
+    "405": {
+      "id": "405",
+      "name": "Winterhude",
+      "population": 8349,
+      "population_percentile": 95
+    },
+    "406": {
+      "id": "406",
+      "name": "Uhlenhorst",
+      "population": 2569,
+      "population_percentile": 54
+    },
+    "407": {
+      "id": "407",
+      "name": "Hohenfelde",
+      "population": 1229,
+      "population_percentile": 30
+    },
+    "408": {
+      "id": "408",
+      "name": "Barmbek-Süd",
+      "population": 4078,
+      "population_percentile": 68
+    },
+    "409": {
+      "id": "409",
+      "name": "Dulsberg",
+      "population": 1905,
+      "population_percentile": 41
+    },
+    "410": {
+      "id": "410",
+      "name": "Barmbek-Nord",
+      "population": 4832,
+      "population_percentile": 77
+    },
+    "411": {
+      "id": "411",
+      "name": "Ohlsdorf",
+      "population": 2973,
+      "population_percentile": 59
+    },
+    "412": {
+      "id": "412",
+      "name": "Fuhlsbüttel",
+      "population": 2395,
+      "population_percentile": 51
+    },
+    "413": {
+      "id": "413",
+      "name": "Langenhorn",
+      "population": 8871,
+      "population_percentile": 96
+    },
+    "501": {
+      "id": "501",
+      "name": "Eilbek",
+      "population": 2789,
+      "population_percentile": 57
+    },
+    "502": {
+      "id": "502",
+      "name": "Wandsbek",
+      "population": 5539,
+      "population_percentile": 82
+    },
+    "503": {
+      "id": "503",
+      "name": "Marienthal",
+      "population": 2247,
+      "population_percentile": 49
+    },
+    "504": {
+      "id": "504",
+      "name": "Jenfeld",
+      "population": 6004,
+      "population_percentile": 84
+    },
+    "505": {
+      "id": "505",
+      "name": "Tonndorf",
+      "population": 2740,
+      "population_percentile": 56
+    },
+    "506": {
+      "id": "506",
+      "name": "Farmsen-Berne",
+      "population": 7404,
+      "population_percentile": 91
+    },
+    "507": {
+      "id": "507",
+      "name": "Bramfeld",
+      "population": 8184,
+      "population_percentile": 94
+    },
+    "508": {
+      "id": "508",
+      "name": "Steilshoop",
+      "population": 4046,
+      "population_percentile": 67
+    },
+    "509": {
+      "id": "509",
+      "name": "Wellingsbüttel",
+      "population": 2062,
+      "population_percentile": 44
+    },
+    "510": {
+      "id": "510",
+      "name": "Sasel",
+      "population": 4682,
+      "population_percentile": 76
+    },
+    "511": {
+      "id": "511",
+      "name": "Poppenbüttel",
+      "population": 4221,
+      "population_percentile": 69
+    },
+    "512": {
+      "id": "512",
+      "name": "Hummelsbüttel",
+      "population": 3437,
+      "population_percentile": 64
+    },
+    "513": {
+      "id": "513",
+      "name": "Lemsahl-Mellingstedt",
+      "population": 1438,
+      "population_percentile": 35
+    },
+    "514": {
+      "id": "514",
+      "name": "Duvenstedt",
+      "population": 1200,
+      "population_percentile": 29
+    },
+    "515": {
+      "id": "515",
+      "name": "Wohldorf-Ohlstedt",
+      "population": 997,
+      "population_percentile": 25
+    },
+    "516": {
+      "id": "516",
+      "name": "Bergstedt",
+      "population": 2296,
+      "population_percentile": 50
+    },
+    "517": {
+      "id": "517",
+      "name": "Volksdorf",
+      "population": 3952,
+      "population_percentile": 65
+    },
+    "518": {
+      "id": "518",
+      "name": "Rahlstedt",
+      "population": 17538,
+      "population_percentile": 99
+    },
+    "601": {
+      "id": "601",
+      "name": "Lohbrügge",
+      "population": 6874,
+      "population_percentile": 89
+    },
+    "602": {
+      "id": "602",
+      "name": "Bergedorf",
+      "population": 6724,
+      "population_percentile": 88
+    },
+    "603": {
+      "id": "603",
+      "name": "Curslack",
+      "population": 867,
+      "population_percentile": 23
+    },
+    "604": {
+      "id": "604",
+      "name": "Altengamme",
+      "population": 468,
+      "population_percentile": 15
+    },
+    "605": {
+      "id": "605",
+      "name": "Neuengamme",
+      "population": 609,
+      "population_percentile": 17
+    },
+    "606": {
+      "id": "606",
+      "name": "Kirchwerder",
+      "population": 1923,
+      "population_percentile": 42
+    },
+    "607": {
+      "id": "607",
+      "name": "Ochsenwerder",
+      "population": 618,
+      "population_percentile": 18
+    },
+    "608": {
+      "id": "608",
+      "name": "Reitbrook",
+      "population": 80,
+      "population_percentile": 7
+    },
+    "609": {
+      "id": "609",
+      "name": "Allermöhe",
+      "population": 209,
+      "population_percentile": 13
+    },
+    "610": {
+      "id": "610",
+      "name": "Billwerder",
+      "population": 825,
+      "population_percentile": 22
+    },
+    "611": {
+      "id": "611",
+      "name": "Moorfleet",
+      "population": 183,
+      "population_percentile": 12
+    },
+    "612": {
+      "id": "612",
+      "name": "Tatenberg",
+      "population": 93,
+      "population_percentile": 8
+    },
+    "613": {
+      "id": "613",
+      "name": "Spadenland",
+      "population": 74,
+      "population_percentile": 6
+    },
+    "614": {
+      "id": "614",
+      "name": "Neuallermöhe",
+      "population": 5138,
+      "population_percentile": 78
+    },
+    "701": {
+      "id": "701",
+      "name": "Harburg",
+      "population": 4545,
+      "population_percentile": 74
+    },
+    "702": {
+      "id": "702",
+      "name": "Neuland",
+      "population": 432,
+      "population_percentile": 14
+    },
+    "703": {
+      "id": "703",
+      "name": "Gut Moor",
+      "population": 39,
+      "population_percentile": 4
+    },
+    "704": {
+      "id": "704",
+      "name": "Wilstorf",
+      "population": 3274,
+      "population_percentile": 62
+    },
+    "705": {
+      "id": "705",
+      "name": "Rönneburg",
+      "population": 660,
+      "population_percentile": 19
+    },
+    "706": {
+      "id": "706",
+      "name": "Langenbek",
+      "population": 683,
+      "population_percentile": 20
+    },
+    "707": {
+      "id": "707",
+      "name": "Sinstorf",
+      "population": 1059,
+      "population_percentile": 27
+    },
+    "708": {
+      "id": "708",
+      "name": "Marmstorf",
+      "population": 1584,
+      "population_percentile": 38
+    },
+    "709": {
+      "id": "709",
+      "name": "Eißendorf",
+      "population": 4505,
+      "population_percentile": 73
+    },
+    "710": {
+      "id": "710",
+      "name": "Heimfeld",
+      "population": 4039,
+      "population_percentile": 66
+    },
+    "711": {
+      "id": "711",
+      "name": "Moorburg",
+      "population": 138,
+      "population_percentile": 10
+    },
+    "712": {
+      "id": "712",
+      "name": "Altenwerder",
+      "population": 0,
+      "population_percentile": 0
+    },
+    "713": {
+      "id": "713",
+      "name": "Hausbruch",
+      "population": 3205,
+      "population_percentile": 61
+    },
+    "714": {
+      "id": "714",
+      "name": "Neugraben-Fischbek",
+      "population": 7610,
+      "population_percentile": 92
+    },
+    "715": {
+      "id": "715",
+      "name": "Francop",
+      "population": 120,
+      "population_percentile": 9
+    },
+    "716": {
+      "id": "716",
+      "name": "Neuenfelde",
+      "population": 1242,
+      "population_percentile": 31
+    },
+    "717": {
+      "id": "717",
+      "name": "Cranz",
+      "population": 147,
+      "population_percentile": 11
+    }
+  }
+}

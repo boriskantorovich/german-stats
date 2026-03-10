@@ -1,0 +1,209 @@
+{
+  "metadata": {
+    "generated": "2025-12-26T23:31:33.000Z",
+    "source_date": "2024-12-31",
+    "total_areas": 25
+  },
+  "areas": {
+    "10": {
+      "id": "10",
+      "name": "Moosach",
+      "population": 56015,
+      "area_hectares": 1109.37,
+      "population_percentile": 41,
+      "density_percentile": 22
+    },
+    "11": {
+      "id": "11",
+      "name": "Milbertshofen-AmHart",
+      "population": 77281,
+      "area_hectares": 1341.72,
+      "population_percentile": 74,
+      "density_percentile": 33
+    },
+    "12": {
+      "id": "12",
+      "name": "Schwabing-Freimann",
+      "population": 77092,
+      "area_hectares": 2567.48,
+      "population_percentile": 70,
+      "density_percentile": 11
+    },
+    "13": {
+      "id": "13",
+      "name": "Bogenhausen",
+      "population": 95475,
+      "area_hectares": 2371.3,
+      "population_percentile": 81,
+      "density_percentile": 19
+    },
+    "14": {
+      "id": "14",
+      "name": "BergamLaim",
+      "population": 47367,
+      "area_hectares": 631.53,
+      "population_percentile": 15,
+      "density_percentile": 59
+    },
+    "15": {
+      "id": "15",
+      "name": "Trudering-Riem",
+      "population": 76280,
+      "area_hectares": 2245.39,
+      "population_percentile": 67,
+      "density_percentile": 15
+    },
+    "16": {
+      "id": "16",
+      "name": "Ramersdorf-Perlach",
+      "population": 120776,
+      "area_hectares": 1989.71,
+      "population_percentile": 96,
+      "density_percentile": 44
+    },
+    "17": {
+      "id": "17",
+      "name": "Obergiesing-Fasangarten",
+      "population": 54352,
+      "area_hectares": 572.09,
+      "population_percentile": 37,
+      "density_percentile": 70
+    },
+    "18": {
+      "id": "18",
+      "name": "Untergiesing-Harlaching",
+      "population": 54067,
+      "area_hectares": 805.72,
+      "population_percentile": 30,
+      "density_percentile": 52
+    },
+    "19": {
+      "id": "19",
+      "name": "Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln",
+      "population": 103717,
+      "area_hectares": 1776.35,
+      "population_percentile": 89,
+      "density_percentile": 33
+    },
+    "20": {
+      "id": "20",
+      "name": "Hadern",
+      "population": 51637,
+      "area_hectares": 922.38,
+      "population_percentile": 22,
+      "density_percentile": 30
+    },
+    "21": {
+      "id": "21",
+      "name": "Pasing-Obermenzing",
+      "population": 81804,
+      "area_hectares": 1649.75,
+      "population_percentile": 78,
+      "density_percentile": 22
+    },
+    "22": {
+      "id": "22",
+      "name": "Aubing-Lochhausen-Langwied",
+      "population": 61011,
+      "area_hectares": 3405.73,
+      "population_percentile": 48,
+      "density_percentile": 0
+    },
+    "23": {
+      "id": "23",
+      "name": "Allach-Untermenzing",
+      "population": 36230,
+      "area_hectares": 1545.12,
+      "population_percentile": 7,
+      "density_percentile": 7
+    },
+    "24": {
+      "id": "24",
+      "name": "Feldmoching-Hasenbergl",
+      "population": 63756,
+      "area_hectares": 2893.85,
+      "population_percentile": 56,
+      "density_percentile": 4
+    },
+    "25": {
+      "id": "25",
+      "name": "Laim",
+      "population": 57116,
+      "area_hectares": 528.6,
+      "population_percentile": 44,
+      "density_percentile": 78
+    },
+    "04": {
+      "id": "04",
+      "name": "SchwabingWest",
+      "population": 68610,
+      "area_hectares": 436.33,
+      "population_percentile": 63,
+      "density_percentile": 96
+    },
+    "02": {
+      "id": "02",
+      "name": "Ludwigsvorstadt-Isarvorstadt",
+      "population": 50081,
+      "area_hectares": 440.17,
+      "population_percentile": 19,
+      "density_percentile": 81
+    },
+    "07": {
+      "id": "07",
+      "name": "Sendling-Westpark",
+      "population": 62240,
+      "area_hectares": 781.49,
+      "population_percentile": 52,
+      "density_percentile": 67
+    },
+    "08": {
+      "id": "08",
+      "name": "Schwanthalerhöhe",
+      "population": 28684,
+      "area_hectares": 207.03,
+      "population_percentile": 4,
+      "density_percentile": 89
+    },
+    "03": {
+      "id": "03",
+      "name": "Maxvorstadt",
+      "population": 52434,
+      "area_hectares": 429.82,
+      "population_percentile": 26,
+      "density_percentile": 85
+    },
+    "06": {
+      "id": "06",
+      "name": "Sendling",
+      "population": 41002,
+      "area_hectares": 393.89,
+      "population_percentile": 11,
+      "density_percentile": 74
+    },
+    "05": {
+      "id": "05",
+      "name": "Au-Haidhausen",
+      "population": 63972,
+      "area_hectares": 422,
+      "population_percentile": 59,
+      "density_percentile": 93
+    },
+    "01": {
+      "id": "01",
+      "name": "Altstadt-Lehel",
+      "population": 20876,
+      "area_hectares": 314.59,
+      "population_percentile": 0,
+      "density_percentile": 48
+    },
+    "09": {
+      "id": "09",
+      "name": "Neuhausen-Nymphenburg",
+      "population": 101901,
+      "area_hectares": 1291.49,
+      "population_percentile": 85,
+      "density_percentile": 63
+    }
+  }
+}

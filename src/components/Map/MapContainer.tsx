@@ -36,6 +36,7 @@ export function MapContainer() {
   const mapRef = useRef<MapRef>(null)
   const { mapState, setViewport, setSelectedArea } = useMapState()
   const adminLevel = useAppStore((s) => s.adminLevel)
+  const currentCityId = useAppStore((s) => s.cityId)
   const setHoveredAreaId = useAppStore((s) => s.setHoveredAreaId)
   const setTooltip = useAppStore((s) => s.setTooltip)
 
@@ -79,8 +80,20 @@ export function MapContainer() {
         const feature = e.features[0]
         if (feature?.properties) {
           const props = feature.properties as Record<string, unknown>
-          const idProp = ID_PROPERTY[adminLevel]
-          const nameProp = NAME_PROPERTY[adminLevel]
+          
+          // Use city-specific property names
+          let idProp: string
+          let nameProp: string
+          
+          if (currentCityId === 'berlin') {
+            idProp = ID_PROPERTY[adminLevel]
+            nameProp = NAME_PROPERTY[adminLevel]
+          } else {
+            // Hamburg and Munich use 'id' and 'name'
+            idProp = 'id'
+            nameProp = 'name'
+          }
+          
           const areaId = props[idProp] as string
           const areaName = props[nameProp] as string || areaId
           
@@ -95,7 +108,7 @@ export function MapContainer() {
         }
       }
     },
-    [adminLevel, setHoveredAreaId, setTooltip]
+    [adminLevel, currentCityId, setHoveredAreaId, setTooltip]
   )
 
   const onMouseLeave = useCallback(() => {
@@ -109,8 +122,11 @@ export function MapContainer() {
         const feature = e.features[0]
         if (feature?.properties) {
           const props = feature.properties as Record<string, unknown>
-          const idProp = ID_PROPERTY[adminLevel]
+          
+          // Use city-specific property names
+          const idProp = currentCityId === 'berlin' ? ID_PROPERTY[adminLevel] : 'id'
           const areaId = props[idProp] as string
+          
           // Update URL, which will sync to store via effect
           setSelectedArea(areaId)
         }
@@ -119,7 +135,7 @@ export function MapContainer() {
         setSelectedArea(null)
       }
     },
-    [adminLevel, setSelectedArea]
+    [adminLevel, currentCityId, setSelectedArea]
   )
 
   return (

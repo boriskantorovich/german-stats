@@ -98,7 +98,12 @@ export function SearchBox() {
           })
 
           if (features && features.length > 0) {
-            const areaId = features[0].properties?.PLR_ID
+            const firstFeature = features[0]
+            const areaId =
+              firstFeature && firstFeature.properties
+                ? (firstFeature.properties.PLR_ID as string | undefined)
+                : undefined
+
             if (areaId) {
               // Update URL state, which will sync to store
               setSelectedArea(areaId)

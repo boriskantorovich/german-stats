@@ -2,14 +2,21 @@ import { useQuery } from '@tanstack/react-query'
 import type { ProfilesData, ProcessedArea, BerlinStats, BezirkeProfilesData, BezirkData } from '../types'
 import { useAppStore } from '../store/appStore'
 
-const PROFILES_URL = '/data/profiles/index.json'
+// Profile URLs by city
+const PROFILES_URLS = {
+  berlin: '/data/profiles/index.json',
+  hamburg: '/data/profiles/hamburg.json',
+  munich: '/data/profiles/munich.json',
+} as const
+
 const BEZIRKE_PROFILES_URL = '/data/profiles/bezirke.json'
 
 /**
- * Fetch all Planungsraum profiles data
+ * Fetch all area profiles data for a specific city
  */
-async function fetchProfiles(): Promise<ProfilesData> {
-  const response = await fetch(PROFILES_URL)
+async function fetchProfiles(cityId: string): Promise<ProfilesData> {
+  const url = PROFILES_URLS[cityId as keyof typeof PROFILES_URLS] || PROFILES_URLS.berlin
+  const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`Failed to fetch profiles: ${response.statusText}`)
   }
@@ -17,7 +24,7 @@ async function fetchProfiles(): Promise<ProfilesData> {
 }
 
 /**
- * Fetch all Bezirke profiles data
+ * Fetch all Bezirke profiles data (Berlin only)
  */
 async function fetchBezirkeProfiles(): Promise<BezirkeProfilesData> {
   const response = await fetch(BEZIRKE_PROFILES_URL)
@@ -28,12 +35,14 @@ async function fetchBezirkeProfiles(): Promise<BezirkeProfilesData> {
 }
 
 /**
- * Hook to fetch and cache all Planungsraum profiles
+ * Hook to fetch and cache all area profiles for the current city
  */
 export function useProfilesData() {
+  const cityId = useAppStore((s) => s.cityId)
+  
   return useQuery({
-    queryKey: ['profiles'],
-    queryFn: fetchProfiles,
+    queryKey: ['profiles', cityId],
+    queryFn: () => fetchProfiles(cityId),
     staleTime: Infinity, // Data doesn't change during session
   })
 }

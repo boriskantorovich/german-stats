@@ -4,10 +4,15 @@ import { useLayerConfig } from '@/hooks/useLayerConfig'
 import { NO_DATA_COLOR, SELECTED_OUTLINE_COLOR, DEFAULT_OUTLINE_COLOR } from '../../data/layers'
 import type { FillLayerSpecification, LineLayerSpecification } from 'maplibre-gl'
 
-const PMTILES_URL = 'pmtiles:///data/berlin-lor.pmtiles'
+// PMTiles URLs by city
+const PMTILES_URLS = {
+  berlin: 'pmtiles:///data/berlin-lor.pmtiles',
+  hamburg: 'pmtiles:///data/hamburg.pmtiles',
+  munich: 'pmtiles:///data/munich.pmtiles',
+} as const
 
-// Layer configuration by admin level
-const LAYER_CONFIG = {
+// Layer configuration by admin level (Berlin-specific)
+const BERLIN_LAYER_CONFIG = {
   planungsraum: {
     sourceLayer: 'planungsraeume',
     idProperty: 'PLR_ID',
@@ -18,13 +23,27 @@ const LAYER_CONFIG = {
   },
 } as const
 
+// Generic layer config for other cities (single level)
+const GENERIC_LAYER_CONFIG = {
+  sourceLayer: 'areas',
+  idProperty: 'id',
+}
+
 export function LORLayer() {
   const adminLevel = useAppStore((s) => s.adminLevel)
+  const currentCityId = useAppStore((s) => s.cityId)
   const selectedAreaId = useAppStore((s) => s.selectedAreaId)
   const hoveredAreaId = useAppStore((s) => s.hoveredAreaId)
   const { colorExpression, indicator } = useLayerConfig()
 
-  const config = LAYER_CONFIG[adminLevel]
+  // Select PMTiles URL based on current city
+  const pmtilesUrl = PMTILES_URLS[currentCityId] || PMTILES_URLS.berlin
+
+  // Select layer config based on city
+  const config = currentCityId === 'berlin' 
+    ? BERLIN_LAYER_CONFIG[adminLevel]
+    : GENERIC_LAYER_CONFIG
+  
   const { sourceLayer, idProperty } = config
 
   // Fill layer paint specification
@@ -64,19 +83,19 @@ export function LORLayer() {
     ],
   }
 
-  // Use key prop to force remount when admin level changes
+  // Use key prop to force remount when admin level OR city changes
   // This ensures MapLibre properly switches source layers
   return (
-    <Source id="lor-source" type="vector" url={PMTILES_URL}>
+    <Source key={`${currentCityId}-source`} id="lor-source" type="vector" url={pmtilesUrl}>
       <Layer
-        key={`${adminLevel}-fill`}
+        key={`${currentCityId}-${adminLevel}-fill`}
         id="lor-fill"
         type="fill"
         source-layer={sourceLayer}
         paint={fillPaint}
       />
       <Layer
-        key={`${adminLevel}-outline`}
+        key={`${currentCityId}-${adminLevel}-outline`}
         id="lor-outline"
         type="line"
         source-layer={sourceLayer}

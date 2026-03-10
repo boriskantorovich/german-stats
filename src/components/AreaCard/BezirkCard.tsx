@@ -189,3 +189,4 @@ function getPercentileValue(profile: BezirkData, indicator: IndicatorId): number
   return typeof value === 'number' ? value : 0
 }
 
+

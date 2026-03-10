@@ -9,6 +9,7 @@ import { Legend } from '@/components/Map/Legend'
 import { ShareButton } from '@/components/Controls/ShareButton'
 import { ThemeToggle } from '@/components/Controls/ThemeToggle'
 import { AdminLevelToggle } from '@/components/Controls/AdminLevelToggle'
+import { CitySelector } from '@/components/Controls/CitySelector'
 import { useAppStore } from '@/store/appStore'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useMapState } from '@/hooks/useMapState'
@@ -17,9 +18,13 @@ export function AppShell() {
   const selectedAreaId = useAppStore((s) => s.selectedAreaId)
   const adminLevel = useAppStore((s) => s.adminLevel)
   const activeLayer = useAppStore((s) => s.activeLayer)
+  const cityId = useAppStore((s) => s.cityId)
   const setActiveLayer = useAppStore((s) => s.setActiveLayer)
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { mapState } = useMapState()
+
+  // Only Berlin has multiple admin levels
+  const showAdminToggle = cityId === 'berlin'
 
   // Sync URL layer param with store
   useEffect(() => {
@@ -45,8 +50,9 @@ export function AppShell() {
 
       {/* Controls overlay - top left */}
       <div className="absolute left-4 top-4 z-10 flex flex-col gap-3">
+        <CitySelector />
         <SearchBox />
-        <AdminLevelToggle />
+        {showAdminToggle && <AdminLevelToggle />}
         <LayerSwitcher />
       </div>
 

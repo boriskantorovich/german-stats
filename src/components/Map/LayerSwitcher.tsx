@@ -2,12 +2,17 @@ import clsx from 'clsx'
 import { useAppStore } from '@/store/appStore'
 import { useMapState } from '@/hooks/useMapState'
 import { LAYER_OPTIONS } from '@/data/metadata'
+import { getAvailableLayerOptions } from '@/data/cityLayers'
 import type { IndicatorId } from '@/types'
 
 export function LayerSwitcher() {
   const activeLayer = useAppStore((s) => s.activeLayer)
+  const cityId = useAppStore((s) => s.cityId)
   const setActiveLayerStore = useAppStore((s) => s.setActiveLayer)
   const { setLayer } = useMapState()
+
+  // Filter layers based on city data availability
+  const availableLayersForCity = getAvailableLayerOptions(cityId, LAYER_OPTIONS)
 
   const handleLayerChange = (layerId: IndicatorId) => {
     // Update both store and URL
@@ -19,7 +24,7 @@ export function LayerSwitcher() {
     <div className="glass-panel p-2">
       <div className="text-xs text-text-secondary mb-2 px-2">Data Layer</div>
       <div className="flex flex-col gap-1">
-        {LAYER_OPTIONS.map((layer) => (
+        {availableLayersForCity.map((layer) => (
           <button
             key={layer.id}
             className={clsx(

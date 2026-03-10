@@ -78,3 +78,4 @@ export function parseGermanNumber(value: string): number {
   return parseFloat(value.replace('.', '').replace(',', '.'))
 }
 
+

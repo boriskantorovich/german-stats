@@ -2,7 +2,13 @@ import { create } from 'zustand'
 import type { MapRef } from 'react-map-gl/maplibre'
 import type { AdminLevel, IndicatorId, TooltipData } from '../types'
 
+export type CityId = 'berlin' | 'hamburg' | 'munich'
+
 interface AppState {
+  // Selected city
+  cityId: CityId
+  setCityId: (id: CityId) => void
+
   // Admin level (Planungsraum or Bezirk)
   adminLevel: AdminLevel
   setAdminLevel: (level: AdminLevel) => void
@@ -38,6 +44,35 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
+  // Selected city
+  cityId: 'berlin',
+  setCityId: (id) => {
+    const { mapRef } = get()
+    set({ 
+      cityId: id, 
+      selectedAreaId: null, 
+      hoveredAreaId: null,
+      isCardOpen: false 
+    })
+    
+    // Fly to city center
+    const cityCoords: Record<CityId, { center: [number, number]; zoom: number }> = {
+      berlin: { center: [13.405, 52.52], zoom: 10 },
+      hamburg: { center: [10.0, 53.55], zoom: 10 },
+      munich: { center: [11.575, 48.137], zoom: 11 },
+    }
+    
+    const coords = cityCoords[id]
+    if (mapRef && coords) {
+      mapRef.flyTo({
+        center: coords.center,
+        zoom: coords.zoom,
+        duration: 2000,
+        essential: true,
+      })
+    }
+  },
+
   // Admin level (Planungsraum or Bezirk)
   adminLevel: 'planungsraum',
   setAdminLevel: (level) => set({ 

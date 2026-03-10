@@ -72,3 +72,4 @@ export function useFormattedValue(indicator: IndicatorId, value: number | undefi
   return meta.format(value)
 }
 
+

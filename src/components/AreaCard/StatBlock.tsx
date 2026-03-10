@@ -23,3 +23,4 @@ export function StatBlock({ indicator, value, percentile }: StatBlockProps) {
   )
 }
 
+
