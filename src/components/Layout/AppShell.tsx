@@ -28,7 +28,7 @@ export function AppShell() {
 
   // Sync URL layer param with store
   useEffect(() => {
-    if (mapState.layer && mapState.layer !== activeLayer) {
+    if (mapState.layer !== activeLayer) {
       setActiveLayer(mapState.layer)
     }
   }, [mapState.layer, activeLayer, setActiveLayer])

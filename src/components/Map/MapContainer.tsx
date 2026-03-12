@@ -13,12 +13,9 @@ import { useAppStore } from '../../store/appStore'
 const protocol = new Protocol()
 maplibregl.addProtocol('pmtiles', protocol.tile)
 
-const STADIA_KEY = import.meta.env.VITE_STADIA_API_KEY as string | undefined
-// Stadia Maps works on localhost without an API key
-// For production, either add an API key or use domain-based authentication
-const MAP_STYLE = STADIA_KEY
-  ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_KEY}`
-  : 'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json'
+// Using Stadia Maps with domain-based authentication.
+// Domains (including localhost) must be configured in the Stadia dashboard.
+const MAP_STYLE = 'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json'
 
 // ID property by admin level
 const ID_PROPERTY = {
@@ -53,7 +50,9 @@ export function MapContainer() {
   }, [setMapRef])
   
   useEffect(() => {
-    return () => setMapRef(null)
+    return () => {
+      setMapRef(null)
+    }
   }, [setMapRef])
 
   // Sync URL state to store

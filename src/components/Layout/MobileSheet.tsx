@@ -20,7 +20,9 @@ export function MobileSheet({ children, open }: MobileSheetProps) {
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [open, setSelectedAreaId])
 
   // Prevent body scroll when sheet is open
@@ -44,7 +46,9 @@ export function MobileSheet({ children, open }: MobileSheetProps) {
           'fixed inset-0 z-20 bg-black/40 transition-opacity duration-300',
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
-        onClick={() => setSelectedAreaId(null)}
+        onClick={() => {
+          setSelectedAreaId(null)
+        }}
         aria-hidden="true"
       />
 
@@ -63,7 +67,9 @@ export function MobileSheet({ children, open }: MobileSheetProps) {
         <div className="flex justify-center py-3">
           <button
             className="h-1.5 w-12 rounded-full bg-text-secondary/30 hover:bg-text-secondary/50 transition-colors"
-            onClick={() => setSelectedAreaId(null)}
+            onClick={() => {
+              setSelectedAreaId(null)
+            }}
             aria-label="Close sheet"
           />
         </div>
