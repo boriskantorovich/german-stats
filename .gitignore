@@ -6,6 +6,13 @@ dist/
 dist-ssr/
 *.local
 
+# Documentation
+*.md !README.md
+
+# shell scripts
+*.sh
+scripts/
+
 # Environment files
 .env
 .env.local
@@ -44,7 +51,4 @@ temp/
 # Data pipeline intermediate files
 data/raw/
 data/processed/
-
-# PMTiles (generated, can be large)
-public/data/*.pmtiles
 
