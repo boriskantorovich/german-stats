@@ -1,0 +1,8 @@
+/*
+  X-Content-Type-Options: nosniff
+
+/data/*.pmtiles
+  Content-Type: application/octet-stream
+  Accept-Ranges: bytes
+  Cache-Control: public, max-age=31536000, immutable
+
