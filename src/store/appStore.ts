@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { MapRef } from 'react-map-gl/maplibre'
 import type { AdminLevel, IndicatorId, TooltipData, CityId } from '../types'
 import { CITY_COORDS, DEFAULT_CITY_ID, DEFAULT_LAYER } from '../config/mapDefaults'
+import { CITY_AVAILABLE_INDICATORS } from '../data/cityLayers'
 
 interface AppState {
   // Selected city
@@ -46,12 +47,21 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Selected city
   cityId: DEFAULT_CITY_ID,
   setCityId: (id) => {
-    const { mapRef } = get()
+    const { mapRef, activeLayer } = get()
+
+    // Ensure the active indicator is valid for the new city.
+    const availableIndicators = CITY_AVAILABLE_INDICATORS[id]
+    const nextLayer: IndicatorId =
+      availableIndicators?.includes(activeLayer)
+        ? activeLayer
+        : (availableIndicators && availableIndicators[0]) || DEFAULT_LAYER
+
     set({
       cityId: id,
       selectedAreaId: null,
       hoveredAreaId: null,
       isCardOpen: false,
+      activeLayer: nextLayer,
     })
 
     // Fly to city center
