@@ -8,7 +8,9 @@ export function ShareButton() {
     try {
       await navigator.clipboard.writeText(window.location.href)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)
     }
@@ -20,7 +22,9 @@ export function ShareButton() {
         'glass-panel px-3 py-2 flex items-center gap-2 text-sm transition-colors',
         copied ? 'text-accent-success' : 'text-text-primary hover:text-accent-primary'
       )}
-      onClick={copyUrl}
+      onClick={() => {
+        void copyUrl()
+      }}
       aria-label={copied ? 'URL copied to clipboard' : 'Copy shareable URL'}
     >
       {copied ? (

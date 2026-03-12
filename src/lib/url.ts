@@ -1,4 +1,5 @@
 import type { MapState, IndicatorId } from '../types'
+import { CITY_COORDS, DEFAULT_CITY_ID, DEFAULT_LAYER } from '../config/mapDefaults'
 
 const VALID_LAYERS: IndicatorId[] = [
   'population',
@@ -29,10 +30,10 @@ const VALID_LAYERS: IndicatorId[] = [
  * Default map state
  */
 export const DEFAULT_MAP_STATE: MapState = {
-  lat: 52.52,
-  lng: 13.405,
-  zoom: 10,
-  layer: 'density',
+  lat: CITY_COORDS[DEFAULT_CITY_ID].center[1],
+  lng: CITY_COORDS[DEFAULT_CITY_ID].center[0],
+  zoom: CITY_COORDS[DEFAULT_CITY_ID].zoom,
+  layer: DEFAULT_LAYER,
   areaId: null,
 }
 

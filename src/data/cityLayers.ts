@@ -53,7 +53,6 @@ export function isIndicatorAvailableForCity(
   indicatorId: IndicatorId
 ): boolean {
   const indicators = CITY_AVAILABLE_INDICATORS[cityId]
-  if (!indicators) return false
   return indicators.includes(indicatorId)
 }
 
@@ -61,7 +60,7 @@ export function isIndicatorAvailableForCity(
  * Get available indicators for a city
  */
 export function getAvailableIndicators(cityId: CityId): IndicatorId[] {
-  return CITY_AVAILABLE_INDICATORS[cityId] ?? []
+  return CITY_AVAILABLE_INDICATORS[cityId]
 }
 
 /**
@@ -72,7 +71,6 @@ export function getAvailableLayerOptions(
   allLayerOptions: Array<{ id: IndicatorId; label: string; icon: string }>
 ): Array<{ id: IndicatorId; label: string; icon: string }> {
   const availableIndicators = CITY_AVAILABLE_INDICATORS[cityId]
-  if (!availableIndicators) return []
 
   return allLayerOptions.filter((option) =>
     availableIndicators.includes(option.id)

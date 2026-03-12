@@ -26,7 +26,7 @@ export function AreaCard({ areaId }: AreaCardProps) {
         <p className="text-text-secondary">Unable to load area data</p>
         <button
           className="mt-2 text-sm text-accent-primary hover:underline"
-          onClick={() => setSelectedArea(null)}
+          onClick={() => {setSelectedArea(null)}}
         >
           Close
         </button>
@@ -48,7 +48,7 @@ export function AreaCard({ areaId }: AreaCardProps) {
         </div>
         <button
           className="text-text-secondary hover:text-text-primary transition-colors p-1"
-          onClick={() => setSelectedArea(null)}
+          onClick={() => {setSelectedArea(null)}}
           aria-label="Close area card"
         >
           <svg

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import type { ProfilesData, ProcessedArea, BerlinStats, BezirkeProfilesData, BezirkData } from '../types'
+import type { ProfilesData, ProcessedArea, BezirkeProfilesData, BezirkData, CityId } from '../types'
 import { useAppStore } from '../store/appStore'
 
 // Profile URLs by city
 const PROFILES_URLS = {
-  berlin: '/data/profiles/index.json',
+  berlin: '/data/profiles/berlin.json',
   hamburg: '/data/profiles/hamburg.json',
   munich: '/data/profiles/munich.json',
 } as const
@@ -14,8 +14,8 @@ const BEZIRKE_PROFILES_URL = '/data/profiles/bezirke.json'
 /**
  * Fetch all area profiles data for a specific city
  */
-async function fetchProfiles(cityId: string): Promise<ProfilesData> {
-  const url = PROFILES_URLS[cityId as keyof typeof PROFILES_URLS] || PROFILES_URLS.berlin
+async function fetchProfiles(cityId: CityId): Promise<ProfilesData> {
+  const url = PROFILES_URLS[cityId]
   const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`Failed to fetch profiles: ${response.statusText}`)
@@ -123,7 +123,7 @@ export function useBerlinStats() {
   const { data: profiles, isLoading, error } = useProfilesData()
 
   return {
-    data: profiles?.berlin_stats as BerlinStats | undefined,
+    data: profiles?.berlin_stats,
     isLoading,
     error,
   }

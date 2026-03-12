@@ -66,7 +66,7 @@ export function useLayerConfig(): LayerConfig {
 /**
  * Hook to get formatted value for an indicator
  */
-export function useFormattedValue(indicator: IndicatorId, value: number | undefined): string {
+export function useFormattedValue(indicator: IndicatorId, value: number | null | undefined): string {
   const meta = INDICATORS[indicator]
   if (value === undefined || value === null) return 'N/A'
   return meta.format(value)

@@ -28,13 +28,13 @@ export function PercentileBar({ percentile, label, format, value }: PercentileBa
         {/* Fill */}
         <div
           className="absolute inset-y-0 left-0 bg-gradient-to-r from-accent-primary/60 to-accent-primary rounded-full transition-all duration-300"
-          style={{ width: `${clampedPercentile}%` }}
+          style={{ width: `${String(clampedPercentile)}%` }}
         />
 
         {/* Marker */}
         <div
           className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-300"
-          style={{ left: `${clampedPercentile}%` }}
+          style={{ left: `${String(clampedPercentile)}%` }}
         >
           <div className="w-4 h-4 bg-accent-primary rounded-full border-2 border-bg-primary shadow-lg" />
         </div>

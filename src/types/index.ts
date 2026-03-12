@@ -1,6 +1,9 @@
 // Admin levels for Berlin
 export type AdminLevel = 'planungsraum' | 'bezirk'
 
+// Supported cities
+export type CityId = 'berlin' | 'hamburg' | 'munich'
+
 // LOR Area Types
 // The geometry data only contains PLR_ID (8-digit code like "01100101")
 // Format: BEZ(2 digits) + PGR(2) + BZR(2) + PLR(2)

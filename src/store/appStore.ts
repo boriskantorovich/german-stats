@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 import type { MapRef } from 'react-map-gl/maplibre'
-import type { AdminLevel, IndicatorId, TooltipData } from '../types'
-
-export type CityId = 'berlin' | 'hamburg' | 'munich'
+import type { AdminLevel, IndicatorId, TooltipData, CityId } from '../types'
+import { CITY_COORDS, DEFAULT_CITY_ID, DEFAULT_LAYER } from '../config/mapDefaults'
 
 interface AppState {
   // Selected city
@@ -45,25 +44,19 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set, get) => ({
   // Selected city
-  cityId: 'berlin',
+  cityId: DEFAULT_CITY_ID,
   setCityId: (id) => {
     const { mapRef } = get()
-    set({ 
-      cityId: id, 
-      selectedAreaId: null, 
+    set({
+      cityId: id,
+      selectedAreaId: null,
       hoveredAreaId: null,
-      isCardOpen: false 
+      isCardOpen: false,
     })
-    
+
     // Fly to city center
-    const cityCoords: Record<CityId, { center: [number, number]; zoom: number }> = {
-      berlin: { center: [13.405, 52.52], zoom: 10 },
-      hamburg: { center: [10.0, 53.55], zoom: 10 },
-      munich: { center: [11.575, 48.137], zoom: 11 },
-    }
-    
-    const coords = cityCoords[id]
-    if (mapRef && coords) {
+    const coords = CITY_COORDS[id]
+    if (mapRef) {
       mapRef.flyTo({
         center: coords.center,
         zoom: coords.zoom,
@@ -75,40 +68,56 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   // Admin level (Planungsraum or Bezirk)
   adminLevel: 'planungsraum',
-  setAdminLevel: (level) => set({ 
-    adminLevel: level, 
-    selectedAreaId: null, 
-    hoveredAreaId: null,
-    isCardOpen: false 
-  }),
+  setAdminLevel: (level) => {
+    set({
+      adminLevel: level,
+      selectedAreaId: null,
+      hoveredAreaId: null,
+      isCardOpen: false,
+    })
+  },
 
   // Selected area
   selectedAreaId: null,
-  setSelectedAreaId: (id) => set({ selectedAreaId: id, isCardOpen: id !== null }),
+  setSelectedAreaId: (id) => {
+    set({ selectedAreaId: id, isCardOpen: id !== null })
+  },
 
   // Hovered area
   hoveredAreaId: null,
-  setHoveredAreaId: (id) => set({ hoveredAreaId: id }),
+  setHoveredAreaId: (id) => {
+    set({ hoveredAreaId: id })
+  },
 
   // Active layer/indicator
-  activeLayer: 'density',
-  setActiveLayer: (layer) => set({ activeLayer: layer }),
+  activeLayer: DEFAULT_LAYER,
+  setActiveLayer: (layer) => {
+    set({ activeLayer: layer })
+  },
 
   // Tooltip
   tooltip: null,
-  setTooltip: (data) => set({ tooltip: data }),
+  setTooltip: (data) => {
+    set({ tooltip: data })
+  },
 
   // UI state
   isCardOpen: false,
-  setIsCardOpen: (open) => set({ isCardOpen: open }),
+  setIsCardOpen: (open) => {
+    set({ isCardOpen: open })
+  },
 
   // Mobile sheet
   isMobileSheetOpen: false,
-  setIsMobileSheetOpen: (open) => set({ isMobileSheetOpen: open }),
+  setIsMobileSheetOpen: (open) => {
+    set({ isMobileSheetOpen: open })
+  },
 
   // Map reference for programmatic control
   mapRef: null,
-  setMapRef: (ref) => set({ mapRef: ref }),
+  setMapRef: (ref) => {
+    set({ mapRef: ref })
+  },
   flyToLocation: (lng, lat, zoom = 15) => {
     const { mapRef } = get()
     if (mapRef) {

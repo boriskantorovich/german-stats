@@ -1,23 +1,31 @@
 import { useAppStore } from '@/store/appStore'
-import type { CityId } from '@/store/appStore'
+import type { CityId } from '@/types'
 
-const CITIES = {
+type CityInfo = {
+  id: CityId
+  name: string
+  icon: string
+  population: string
+  districts: number
+}
+
+const CITIES: Record<CityId, CityInfo> = {
   berlin: {
-    id: 'berlin' as CityId,
+    id: 'berlin',
     name: 'Berlin',
     icon: '🏛️',
     population: '3.8M',
     districts: 542,
   },
   hamburg: {
-    id: 'hamburg' as CityId,
+    id: 'hamburg',
     name: 'Hamburg',
     icon: '⚓',
     population: '1.9M',
     districts: 104,
   },
   munich: {
-    id: 'munich' as CityId,
+    id: 'munich',
     name: 'München',
     icon: '🍺',
     population: '1.5M',
@@ -34,7 +42,9 @@ export function CitySelector() {
       {Object.values(CITIES).map((city) => (
         <button
           key={city.id}
-          onClick={() => setCityId(city.id)}
+            onClick={() => {
+              setCityId(city.id)
+            }}
           className={`
             flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-all
             ${
@@ -43,7 +53,7 @@ export function CitySelector() {
                 : 'text-text-secondary hover:bg-bg-elevated hover:text-text-primary'
             }
           `}
-          title={`${city.name} - ${city.population} people, ${city.districts} districts`}
+            title={`${city.name} - ${city.population} people, ${String(city.districts)} districts`}
         >
           <span className="text-lg">{city.icon}</span>
           <div className="hidden text-left sm:block">

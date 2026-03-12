@@ -236,7 +236,7 @@ export const INDICATORS: Record<IndicatorId, IndicatorMeta> = {
     label: 'Aging Index',
     labelDe: 'Alterungsindex',
     unit: 'ratio',
-    format: (v: number) => `${v.toFixed(1)}`,
+    format: (v: number) => v.toFixed(1),
     description: 'Elderly (65+) per 100 youth (0-14). Higher = more aging',
     source: 'Derived from age statistics',
     referenceDate: '2024-12-31',

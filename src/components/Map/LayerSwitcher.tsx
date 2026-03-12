@@ -33,7 +33,9 @@ export function LayerSwitcher() {
                 ? 'bg-accent-primary/20 text-accent-primary'
                 : 'text-text-primary hover:bg-hover-bg'
             )}
-            onClick={() => handleLayerChange(layer.id as IndicatorId)}
+            onClick={() => {
+              handleLayerChange(layer.id)
+            }}
             aria-pressed={activeLayer === layer.id}
           >
             <span className="text-base">{layer.icon}</span>

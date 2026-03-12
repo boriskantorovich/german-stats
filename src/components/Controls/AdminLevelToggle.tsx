@@ -15,7 +15,9 @@ export function AdminLevelToggle() {
       {LEVELS.map((level) => (
         <button
           key={level.id}
-          onClick={() => setAdminLevel(level.id)}
+          onClick={() => {
+            setAdminLevel(level.id)
+          }}
           className={`
             px-3 py-1.5 text-sm font-medium rounded transition-all
             ${

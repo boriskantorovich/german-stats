@@ -65,7 +65,7 @@ export function calculateStats(values: number[]): {
 export function formatPercentile(percentile: number): string {
   const rounded = Math.round(percentile)
   const suffix = getOrdinalSuffix(rounded)
-  return `${rounded}${suffix}`
+  return `${String(rounded)}${suffix}`
 }
 
 /**
