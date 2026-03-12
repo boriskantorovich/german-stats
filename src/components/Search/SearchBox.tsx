@@ -3,8 +3,6 @@ import clsx from 'clsx'
 import { useAppStore } from '@/store/appStore'
 import { useMapState } from '@/hooks/useMapState'
 
-const STADIA_KEY = import.meta.env.VITE_STADIA_API_KEY as string | undefined
-
 interface SearchResult {
   properties: {
     id: string
@@ -21,7 +19,6 @@ export function SearchBox() {
   const [results, setResults] = useState<SearchResult[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [hasSearched, setHasSearched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<number>()
   const flyToLocation = useAppStore((s) => s.flyToLocation)
@@ -30,15 +27,13 @@ export function SearchBox() {
   const search = useCallback(async (q: string) => {
     if (!q.trim()) {
       setResults([])
-      setHasSearched(false)
       return
     }
 
     setIsLoading(true)
-    setHasSearched(true)
 
     try {
-      // Build URL with optional API key (not needed for localhost)
+      // Build URL; Stadia geocoding uses domain-based authentication
       const params = new URLSearchParams({
         text: q,
         'focus.point.lat': '52.52',
@@ -46,12 +41,9 @@ export function SearchBox() {
         'boundary.country': 'DE',
         layers: 'address,venue,street',
       })
-      if (STADIA_KEY) {
-        params.append('api_key', STADIA_KEY)
-      }
 
       const response = await fetch(
-        `https://api.stadiamaps.com/geocoding/v1/autocomplete?${params}`
+        `https://api.stadiamaps.com/geocoding/v1/autocomplete?${params.toString()}`
       )
 
       if (!response.ok) throw new Error('Search failed')
@@ -92,17 +84,14 @@ export function SearchBox() {
       // Handler to query the area after map move completes
       const onMoveEnd = () => {
         // Give a small delay for tiles to render
-        setTimeout(() => {
+        window.setTimeout(() => {
           const features = map.queryRenderedFeatures(map.project([lng, lat]), {
             layers: ['lor-fill'],
           })
 
-          if (features && features.length > 0) {
-            const firstFeature = features[0]
-            const areaId =
-              firstFeature && firstFeature.properties
-                ? (firstFeature.properties.PLR_ID as string | undefined)
-                : undefined
+          if (features.length > 0) {
+            const firstFeature = features[0] as typeof features[0]
+            const areaId = firstFeature.properties.PLR_ID as string | undefined
 
             if (areaId) {
               // Update URL state, which will sync to store
@@ -116,7 +105,7 @@ export function SearchBox() {
       }
 
       // Listen for when flyTo completes
-      map.once('moveend', onMoveEnd)
+      void map.once('moveend', onMoveEnd)
 
       // Fly to the selected location
       flyToLocation(lng, lat, 16)
@@ -125,7 +114,6 @@ export function SearchBox() {
       setQuery('')
       setResults([])
       setIsOpen(false)
-      setHasSearched(false)
     },
     [flyToLocation, setSelectedArea]
   )
@@ -139,7 +127,9 @@ export function SearchBox() {
     }
 
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   // Clean up timeout on unmount
@@ -174,7 +164,9 @@ export function SearchBox() {
           placeholder="Search address in Berlin..."
           value={query}
           onChange={handleInputChange}
-          onFocus={() => setIsOpen(true)}
+          onFocus={() => {
+            setIsOpen(true)
+          }}
           className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-secondary focus:outline-none"
         />
         {isLoading && (
@@ -192,7 +184,9 @@ export function SearchBox() {
                   'w-full text-left px-3 py-2 text-sm transition-colors',
                   'hover:bg-hover-bg text-text-primary'
                 )}
-                onClick={() => selectResult(result)}
+                onClick={() => {
+                  selectResult(result)
+                }}
               >
                 {result.properties.label}
               </button>
@@ -200,16 +194,6 @@ export function SearchBox() {
           ))}
         </ul>
       )}
-
-
-      {/* Info about localhost */}
-      {!STADIA_KEY && isOpen && query.length > 0 && results.length === 0 && !isLoading && hasSearched && (
-        <div className="absolute top-full left-0 right-0 mt-2 glass-panel p-3 text-xs text-text-secondary z-50">
-          Note: Search works on localhost without an API key. For production, add VITE_STADIA_API_KEY to your .env file.
-        </div>
-      )}
-
     </div>
   )
 }
-

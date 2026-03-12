@@ -4,11 +4,11 @@ import { useLayerConfig } from '@/hooks/useLayerConfig'
 import { NO_DATA_COLOR, SELECTED_OUTLINE_COLOR, DEFAULT_OUTLINE_COLOR } from '../../data/layers'
 import type { FillLayerSpecification, LineLayerSpecification } from 'maplibre-gl'
 
-// PMTiles URLs by city
+// PMTiles URLs by city (served from R2 public dev URL)
 const PMTILES_URLS = {
-  berlin: 'pmtiles:///data/berlin-lor.pmtiles',
-  hamburg: 'pmtiles:///data/hamburg.pmtiles',
-  munich: 'pmtiles:///data/munich.pmtiles',
+  berlin: 'pmtiles://https://pub-98958c4b3a3a491a85571566a6bad518.r2.dev/berlin-lor.pmtiles',
+  hamburg: 'pmtiles://https://pub-98958c4b3a3a491a85571566a6bad518.r2.dev/hamburg.pmtiles',
+  munich: 'pmtiles://https://pub-98958c4b3a3a491a85571566a6bad518.r2.dev/munich.pmtiles',
 } as const
 
 // Layer configuration by admin level (Berlin-specific)
@@ -37,7 +37,7 @@ export function LORLayer() {
   const { colorExpression, indicator } = useLayerConfig()
 
   // Select PMTiles URL based on current city
-  const pmtilesUrl = PMTILES_URLS[currentCityId] || PMTILES_URLS.berlin
+  const pmtilesUrl = PMTILES_URLS[currentCityId as keyof typeof PMTILES_URLS]
 
   // Select layer config based on city
   const config = currentCityId === 'berlin' 
